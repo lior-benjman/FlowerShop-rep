@@ -1,5 +1,5 @@
 import express from 'express';
-import connectDB from './database.js';
+import connectDB from './config/database.js';
 import Flower from './models/Flower.js';
 
 export const app = express();
