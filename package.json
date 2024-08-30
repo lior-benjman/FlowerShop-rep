@@ -1,6 +1,7 @@
 {
   "name": "flowershop",
   "version": "1.0.0",
+  "type": "module",
   "description": "FlowerShop",
   "main": "index.js",
   "scripts": {
@@ -8,5 +9,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
 }
