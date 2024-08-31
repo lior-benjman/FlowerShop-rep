@@ -1,5 +1,5 @@
 import express from 'express';
-import connectDB from './config/database.js';
+import connectDB from '../db/database.js';
 
 
 // Import models
