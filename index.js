@@ -1,5 +1,3 @@
-import { connectDB } from "./src/db/database.js";
-import { startServer } from "./src/server/server.js";
+import { startServer } from "./src/server/app.js";
 
 await startServer();
-await connectDB();
