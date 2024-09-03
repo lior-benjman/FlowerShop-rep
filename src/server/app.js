@@ -1,10 +1,7 @@
 import express from 'express';
+import { registerAllRoutes } from '../routes/index.js';
 
 export const app = express();
-const port = 3000;
 
-export const startServer = async () => {
-    app.listen(port, () => {
-        console.log(`Server is running on port ${port}`);
-    });
-}
+await registerAllRoutes(app);
+
