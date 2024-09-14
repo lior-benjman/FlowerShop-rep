@@ -9,4 +9,10 @@ orderRouter.get('/:id', orderController.getById);
 orderRouter.put('/:id', orderController.update);
 orderRouter.delete('/:id', orderController.delete);
 
+orderRouter.post('/create-from-cart', orderController.createFromCart);
+orderRouter.put('/update-status', orderController.updateOrderStatus);
+
+orderRouter.get('/status/:status', orderController.getOrdersByStatus);
+orderRouter.get('/report', orderController.generateOrderReport);
+
 export default orderRouter;

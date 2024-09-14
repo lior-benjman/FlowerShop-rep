@@ -9,4 +9,6 @@ categoryRrouter.get('/:id', categoryController.getById);
 categoryRrouter.put('/:id', categoryController.update);
 categoryRrouter.delete('/:id', categoryController.delete);
 
+categoryRrouter.get('/:categoryId/flowers', categoryController.getCategoryWithFlowers);
+
 export default categoryRrouter;

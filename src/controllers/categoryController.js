@@ -44,5 +44,16 @@ export const categoryController = {
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
+  },
+
+  getCategoryWithFlowers: async (req, res) => {
+    try {
+      const { categoryId } = req.params;
+      const category = await Category.findById(categoryId);
+      const flowers = await Flower.find({ category: categoryId });
+      res.json({ category, flowers });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
   }
 };

@@ -1,4 +1,5 @@
 import Order from "../schema/models/Order.js";
+import User from "../schema/models/User.js";
 
 export const orderController = {
   create: async (req, res) => {
@@ -41,6 +42,111 @@ export const orderController = {
       const deletedOrder = await Order.findByIdAndDelete(req.params.id);
       if (!deletedOrder) return res.status(404).json({ message: "Order not found" });
       res.json({ message: "Order deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  createFromCart: async (req, res) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+      const { userId, shippingAddress } = req.body;
+      const user = await User.findById(userId).populate('cart.items.flower');
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      if (!user.cart || user.cart.length === 0 || user.cart[0].items.length === 0) {
+        throw new Error("Cart is empty");
+      }
+
+      const orderItems = [];
+      for (const item of user.cart[0].items) {
+        const flower = await Flower.findById(item.flower._id).session(session);
+        if (!flower) {
+          throw new Error(`Flower with id ${item.flower._id} not found`);
+        }
+
+        if (flower.stockQuantity < item.quantity) {
+          throw new Error(`Not enough stock for ${flower.name}`);
+        }
+
+        // Update stock
+        flower.stockQuantity -= item.quantity;
+        await flower.save({ session });
+
+        orderItems.push({
+          flower: flower._id,
+          quantity: item.quantity,
+          price: flower.price
+        });
+      }
+
+      const newOrder = new Order({
+        user: userId,
+        items: orderItems,
+        totalAmount: user.cart[0].totalAmount,
+        shippingAddress,
+        status: 'Pending'
+      });
+
+      await newOrder.save({ session });
+
+      // Clear user's cart
+      user.cart = [{ items: [], totalAmount: 0 }];
+      await user.save({ session });
+
+      await session.commitTransaction();
+      session.endSession();
+
+      res.status(201).json(newOrder);
+    } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
+      res.status(400).json({ message: error.message });
+    }
+  },
+
+  updateOrderStatus: async (req, res) => {
+    try {
+      const { orderId, status } = req.body;
+      const order = await Order.findById(orderId);
+      if (!order) return res.status(404).json({ message: "Order not found" });
+
+      order.status = status;
+      await order.save();
+
+      res.json(order);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  },
+
+  getOrdersByStatus: async (req, res) => {
+    try {
+      const { status } = req.params;
+      const orders = await Order.find({ status }).populate('user').populate('items.flower');
+      res.json(orders);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+  generateOrderReport: async (req, res) => {
+    try {
+      const { startDate, endDate } = req.query;
+      const orders = await Order.find({
+        createdAt: { $gte: new Date(startDate), $lte: new Date(endDate) }
+      }).populate('items.flower');
+      
+      const report = {
+        totalOrders: orders.length,
+        totalRevenue: orders.reduce((sum, order) => sum + order.totalAmount, 0)
+        //More Data Needed
+      };
+      
+      res.json(report);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
