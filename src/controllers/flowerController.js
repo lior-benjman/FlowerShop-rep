@@ -83,5 +83,34 @@ export const flowerController = {
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
-  }
+  },
+  //Featured Flowers
+  getTopSellingFlowers: async (req, res) => {
+    try {
+      const topFlowers = await Order.aggregate([
+        { $unwind: "$items" },
+        { $group: { _id: "$items.flower", totalSold: { $sum: "$items.quantity" } } },
+        { $sort: { totalSold: -1 } },
+        { $limit: 10 },
+        { $lookup: { from: "flowers", localField: "_id", foreignField: "_id", as: "flowerDetails" } },
+        { $unwind: "$flowerDetails" },
+        { $project: { _id: 1, totalSold: 1, name: "$flowerDetails.name", price: "$flowerDetails.price" } }
+      ]);
+      res.json(topFlowers);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  getNewArrivals: async (req, res) => {
+    try {
+      const newFlowers = await Flower.find()
+        .sort({ createdAt: -1 })
+        .limit(10);
+      res.json(newFlowers);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
 };

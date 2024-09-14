@@ -18,5 +18,8 @@ userRouter.put('/change-password', userController.changePassword);
 
 userRouter.get('/:userId/orders', userController.getUserOrders);
 
+userRouter.get('/profile/:userId', userController.getUserProfile);
+userRouter.put('/profile/:userId', userController.updateUserProfile);
+
 
 export default userRouter;

@@ -13,5 +13,7 @@ flowerRouter.get('/search', flowerController.searchFlowers);
 flowerRouter.get('/category/:categoryId', flowerController.getFlowersByCategory);
 flowerRouter.put('/stock', flowerController.updateStock);
 
+flowerRouter.get('/top-selling', flowerController.getTopSellingFlowers);
+flowerRouter.get('/new-arrivals', flowerController.getNewArrivals);
 
 export default flowerRouter;

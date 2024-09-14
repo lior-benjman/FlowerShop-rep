@@ -150,5 +150,35 @@ export const orderController = {
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
+  },
+  cancelOrder: async (req, res) => {
+    try {
+      const order = await Order.findById(req.params.orderId);
+      if (!order) return res.status(404).json({ message: "Order not found" });
+      if (order.status !== 'Pending') return res.status(400).json({ message: "Order cannot be cancelled" });
+
+      order.status = 'Cancelled';
+      await order.save();
+
+      // Restore inventory
+      for (let item of order.items) {
+        await Flower.findByIdAndUpdate(item.flower, { $inc: { stockQuantity: item.quantity } });
+      }
+
+      res.json({ message: "Order cancelled successfully" });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  },
+  getOrderDetails: async (req, res) => {
+    try {
+      const order = await Order.findById(req.params.orderId)
+        .populate('user', 'username email')
+        .populate('items.flower', 'name price');
+      if (!order) return res.status(404).json({ message: "Order not found" });
+      res.json(order);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
   }
 };

@@ -15,4 +15,8 @@ orderRouter.put('/update-status', orderController.updateOrderStatus);
 orderRouter.get('/status/:status', orderController.getOrdersByStatus);
 orderRouter.get('/report', orderController.generateOrderReport);
 
+orderRouter.post('/:orderId/cancel', orderController.cancelOrder);
+orderRouter.get('/:orderId/details', orderController.getOrderDetails);
+
+
 export default orderRouter;
