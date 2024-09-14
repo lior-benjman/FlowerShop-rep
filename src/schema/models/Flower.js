@@ -6,7 +6,6 @@ const flowerSchema = new mongoose.Schema({
   description: String,
   category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
   inStock: { type: Boolean, default: true },
-  imageUrl: String
 });
 
 const Flower = mongoose.model('Flower', flowerSchema);

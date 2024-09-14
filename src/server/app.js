@@ -1,7 +1,10 @@
 import express from 'express';
-import { registerAllRoutes } from '../routes/index.js';
+import router from '../routes/index.js';
 
 export const app = express();
 
-await registerAllRoutes(app);
 
+app.use(express.json());
+app.use('/api', router);
+
+export default app;
