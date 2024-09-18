@@ -1,12 +1,11 @@
 import express from 'express';
-import categoryRoutes from './categoryRoutes.js';
 import flowerRoutes from './flowerRoutes.js';
 import orderRoutes from './orderRoutes.js';
 import userRoutes from './userRoutes.js';
 
 const router = express.Router();
 
-router.use('/categories', categoryRoutes);
+
 router.use('/flowers', flowerRoutes);
 router.use('/orders', orderRoutes);
 router.use('/users', userRoutes);

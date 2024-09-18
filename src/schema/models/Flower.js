@@ -4,7 +4,8 @@ const flowerSchema = new mongoose.Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
   description: String,
-  category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
+  category: { type: String, required: true },
+  color: { type: String, required: true},
   inStock: { type: Boolean, default: true },
 });
 

@@ -10,7 +10,8 @@ flowerRouter.put('/:id', flowerController.update);
 flowerRouter.delete('/:id', flowerController.delete);
 
 flowerRouter.get('/search', flowerController.searchFlowers);
-flowerRouter.get('/category/:categoryId', flowerController.getFlowersByCategory);
+flowerRouter.get('/category/:category', flowerController.getFlowersByCategory);
+flowerRouter.get('/color/:color', flowerController.getFlowersByColor);
 flowerRouter.put('/stock', flowerController.updateStock);
 
 flowerRouter.get('/top-selling', flowerController.getTopSellingFlowers);

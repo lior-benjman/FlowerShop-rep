@@ -12,7 +12,7 @@ export const flowerController = {
   },
   getAll: async (req, res) => {
     try {
-      const flowers = await Flower.find().populate('category');
+      const flowers = await Flower.find();
       res.json(flowers);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -20,7 +20,7 @@ export const flowerController = {
   },
   getById: async (req, res) => {
     try {
-      const flower = await Flower.findById(req.params.id).populate('category');
+      const flower = await Flower.findById(req.params.id);
       if (!flower) return res.status(404).json({ message: "Flower not found" });
       res.json(flower);
     } catch (error) {
@@ -54,7 +54,7 @@ export const flowerController = {
           { name: { $regex: query, $options: 'i' } },
           { description: { $regex: query, $options: 'i' } }
         ]
-      }).populate('category');
+      });
       res.json(flowers);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -63,8 +63,18 @@ export const flowerController = {
 
   getFlowersByCategory: async (req, res) => {
     try {
-      const { categoryId } = req.params;
-      const flowers = await Flower.find({ category: categoryId });
+      const { category } = req.params;
+      const flowers = await Flower.find({ category: category });
+      res.json(flowers);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  getFlowersByColor: async (req, res) => {
+    try {
+      const { color } = req.params;
+      const flowers = await Flower.find({ color: color });
       res.json(flowers);
     } catch (error) {
       res.status(500).json({ message: error.message });
