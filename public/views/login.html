@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flower for Nurit</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../styles/styles.css">
 </head>
 <body>
     <header>
             <div class="banner">
                     <video  autoplay muted loop id="myVideo">
-                    <source src="../../public/videos/banner.mp4" type="video/mp4"></video>
+                    <source src="../videos/banner.mp4" type="video/mp4"></video>
                 <nav>
                     <div class="logo">C</div>
                         <ul>
@@ -20,9 +20,9 @@
                             <li><a href="../views/contactus.html">Contact</a></li>
                         </ul>
                     <div class="user-actions">
-                        <button class="login-button" onclick="window.location.href='login.html'">
-                            <img src="../../public/images/user2_white_corrected.png" alt="Login Icon" class="login-icon"> Log In
-                        </button>            
+                        <button class="login-button" onclick="window.location.href='signup.html'">
+                            <img src="../images/user2_white_corrected.png" alt="Login Icon" class="login-icon"> Sign Up
+                        </button>             
                         <a href="#">Cart (0)</a>
                     </div>
                 </nav>
@@ -31,17 +31,15 @@
                     <section id="login" class="login-section">
                         <div class="login-container">
                             <div class="login-form">
-                                <h2>Register</h2>
-                                <h3>Please register your new Account.</h3>
-                                <form id="register-form">
-                                    <input type="text" id="username" name="username" placeholder="Name" required>
-                                    <input type="email" id="email" name="email" placeholder="Email" required>
-                                    <input type="password" id="password" name="password" placeholder="Password" required>
-                                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" required>
-                                    <button type="submit">Register now</button>
+                                <h2>Sign In</h2>
+                                <h3>Please sign in to your Account.</h3>
+                                <form id="signin-form">
+                                    <input name="username" id="username" type="username" placeholder="Username" required>
+                                    <input name="password" id="password" type="password" placeholder="Password" required>
+                                    <button type="submit">Sign In</button>
                                 </form>
-                                
                                 <a href="../views/forgotpass.html" class="forgot-password">Forgot your password?</a>
+                                <a href="../views/signup.html" class="forgot-password">Dont have a registered account yet?</a>
                             </div>
                 </div></div>
     </header>
@@ -64,10 +62,10 @@
         <h1>Nurit's Flower - Flower Shop</h1><p></p>
     </div>
     <div class="gallery">
-        <img src="../../public/images/11.jpg" alt="Gallery 1">
-        <img src="../../public/images/12.jpg" alt="Gallery 2">
-        <img src="../../public/images/13.jpg" alt="Gallery 3">
-        <img src="../../public/images/14.jpg" alt="Gallery 4">
+        <img src="../images/11.jpg" alt="Gallery 1">
+        <img src="../images/12.jpg" alt="Gallery 2">
+        <img src="../images/13.jpg" alt="Gallery 3">
+        <img src="../images/14.jpg" alt="Gallery 4">
         
     </div>
 
@@ -75,7 +73,7 @@
     <div class="instegram">
         <br><br>
         <button class="instegram-button"> 
-            Follow Us <img src="../../public/images/instegram.png" alt="Instegram Icon" class="instegram-icon">
+            Follow Us <img src="../images/instegram.png" alt="Instegram Icon" class="instegram-icon">
         </button>   
     </div>
  <div class="footer">
@@ -108,31 +106,27 @@
         <p>Moshe Sharet 100 street</p> <br></br>
         <div class="social-icons">
             <span>Follow</span>
-            <button class="facebook-icon"><img src="../../public/images/facebook.png" alt="facebook Icon"></button>
-            <button class="instegram-icon"><img src="../../public/images/instegram.png" alt="Instegram Icon"></button>
-            <button class="whatsapp-icon"><img src="../../public/images/whatsapp.png" alt="whatsapp Icon"></button> 
-            <button class="tiktok-icon"><img src="../../public/images/tiktok.png" alt="tiktok Icon"></button>     
+            <button class="facebook-icon"><img src="../images/facebook.png" alt="facebook Icon"></button>
+            <button class="instegram-icon"><img src="../images/instegram.png" alt="Instegram Icon"></button>
+            <button class="whatsapp-icon"><img src="../images/whatsapp.png" alt="whatsapp Icon"></button> 
+            <button class="tiktok-icon"><img src="../images/tiktok.png" alt="tiktok Icon"></button>     
         </div>
     </div>
  </div>
  <script>
-    document.getElementById('register-form').addEventListener('submit', function(event) {
+    document.getElementById('signin-form').addEventListener('submit', function(event) {
         event.preventDefault();
 
         const username = document.getElementById('username').value;
-        const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirm-password').value;
 
-        // Password matching validation
-        if (password !== confirmPassword) {
-            alert('Registration failed! Please check if Password and Confirmed Password are matching.');
-            return;
+        // Replace later.
+        if (username === 'admin' && password === 'password') {
+            alert('Login successful!');
+            window.location.href = 'shop.html';  // Redirect after successful login
+        } else {
+            alert('Login failed! Please check if Username/Password were typed correctly.');
         }
-
-        // Replace later
-        alert('Registration successful!');
-        window.location.href = 'shop.html';  // Redirect after successful registration
     });
 </script>
 </body>
