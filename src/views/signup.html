@@ -41,7 +41,7 @@
                                     <button type="submit">Register now</button>
                                 </form>
                                 
-                                <a href="#" class="forgot-password">Forgot your password?</a>
+                                <a href="../views/forgotpass.html" class="forgot-password">Forgot your password?</a>
                             </div>
                 </div></div>
     </header>
@@ -126,7 +126,7 @@
 
         // Password matching validation
         if (password !== confirmPassword) {
-            document.getElementById('register-error').style.display = 'block';
+            alert('Registration failed! Please check if Password and Confirmed Password are matching.');
             return;
         }
 

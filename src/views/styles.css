@@ -1,28 +1,28 @@
 @font-face {
     font-family: 'Avenir';
-    src: url('../../public/fonts/Avenir/Avenir.woff2.ttc') format('woff2'),
+    src: url('../../public/fonts/Avenir/Avenir.woff2') format('woff2'),
          url('../../public/fonts/Avenir/Avenir.ttc') format('ttc');
     font-weight: normal;
     font-style: normal;
 }
 @font-face {
     font-family: 'Avenir Next';
-    src: url('../../public/fonts/Avenir/Avenir\ Next.woff2.tt2') format('woff2'),
-         url('../../public/fonts/Avenir/Avenir\ Next.ttc') format('ttc');
+    src: url('../../public/fonts/Avenir/Avenir Next.woff2') format('woff2'),
+         url('../../fonts/Avenir/Avenir Next.ttc') format('ttc');
     font-weight: normal;
     font-style: normal;
 }
 @font-face {
     font-family: 'Avenir Next Ultra Light';
-    src: url('../../public/fonts/Avenir/Avenir\ Next.woff2.tt2') format('woff2'),
-        url('../../public/fonts/Avenir/Avenir\ Next.ttc') format('ttc');
+    src: url('../../public/fonts/Avenir/Avenir Next.woff2') format('woff2'),
+        url('../../public/fonts/Avenir/Avenir Next.ttc') format('ttc');
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Avenir Next Condensed';
-    src: url('../../public/fonts/Avenir/Avenir\ Next.woff2.tt2') format('woff2'),
-        url('../../public/fonts/Avenir/Avenir\ Next.ttc') format('ttc');
+    src: url('../../public/fonts/Avenir/Avenir Next Condensed.woff2') format('woff2'),
+        url('../../public/fonts/Avenir/Avenir Next Condensed.ttc') format('ttc');
     font-weight: normal;
     font-style: normal;
 }
