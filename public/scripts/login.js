@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            console.log(JSON.stringify({ username, password }));
 
             try {
                 const response = await fetch('/api/auth/login', {
