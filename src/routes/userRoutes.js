@@ -1,23 +1,25 @@
-import User from "../schema/models/User.js";
-import { app } from "../server/app.js";
+import express from 'express';
+import { userController } from '../controllers/userController.js';
 
-export const usersRoutes = async () => {
-app.post('/', async (req, res) => {
-    try {
-        const newUser = new User(req.body);
-        await newUser.save();   
-        res.status(201).json(newUser);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-    });
-    
-    app.get('/search', async (req, res) => {
-    try {
-        const users = await User.find();
-        res.json(users);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-    })
-};
+const userRouter = express.Router();
+
+userRouter.post('/', userController.create);
+userRouter.get('/', userController.getAll);
+userRouter.get('/:id', userController.getById);
+userRouter.put('/:id', userController.update);
+userRouter.delete('/:id', userController.delete);
+
+userRouter.post('/cart/add', userController.addToCart);
+userRouter.post('/cart/remove', userController.removeFromCart);
+userRouter.put('/cart/update', userController.updateCartItemQuantity);
+userRouter.post('/cart/clear', userController.clearCart);
+
+userRouter.put('/change-password', userController.changePassword);
+
+userRouter.get('/:userId/orders', userController.getUserOrders);
+
+userRouter.get('/profile/:userId', userController.getUserProfile);
+userRouter.put('/profile/:userId', userController.updateUserProfile);
+
+
+export default userRouter;
