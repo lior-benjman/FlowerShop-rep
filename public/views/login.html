@@ -113,20 +113,5 @@
         </div>
     </div>
  </div>
- <script>
-    document.getElementById('signin-form').addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-
-        // Replace later.
-        if (username === 'admin' && password === 'password') {
-            alert('Login successful!');
-            window.location.href = 'shop.html';  // Redirect after successful login
-        } else {
-            alert('Login failed! Please check if Username/Password were typed correctly.');
-        }
-    });
-</script>
+ <script src="../scripts/login.js"></script>
 </body>
