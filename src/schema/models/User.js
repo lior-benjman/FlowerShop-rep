@@ -8,7 +8,14 @@ const userSchema = new mongoose.Schema({
   lastName: String,
   address: String,
   isAdmin: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  cart: [
+    {items: [{
+      flower: { type: mongoose.Schema.Types.ObjectId, ref: 'Flower', required: true },
+      quantity: { type: Number, required: true, min: 1 }
+    }]},
+    {totalAmount: { type: Number, required: true }}
+  ]
 });
 
 const User = mongoose.model('User', userSchema);
