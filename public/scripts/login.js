@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (response.ok) {
                     localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
                     alert('Login successful!');
                     window.location.href = 'shop.html';
                 } else {
