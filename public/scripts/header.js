@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function getCartItemCount() {
         if (!user) return 0;
         try {
-            const response = await fetch(`/api/auth/cart/${user.id}`);
+            const response = await fetch(`/api/users/cart/${user.id}`);
             const data = await response.json();
             return data.itemCount || 0;
         } catch (error) {

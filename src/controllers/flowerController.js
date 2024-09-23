@@ -12,8 +12,22 @@ export const flowerController = {
   },
   getAll: async (req, res) => {
     try {
-      const flowers = await Flower.find();
-      res.json(flowers);
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const skip = (page - 1) * limit;
+
+      const flowers = await Flower.find()
+        .skip(skip)
+        .limit(limit);
+
+      const total = await Flower.countDocuments();
+
+      res.json({
+        flowers,
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalItems: total
+      });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }

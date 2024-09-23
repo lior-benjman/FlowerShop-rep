@@ -105,19 +105,15 @@ export const userController = {
       const flower = await Flower.findById(flowerId);
       if (!flower) return res.status(404).json({ message: "Flower not found" });
 
-      if (!user.cart || user.cart.length === 0) {
-        user.cart = [{ items: [], totalAmount: 0 }];
-      }
-
-      const cartItemIndex = user.cart[0].items.findIndex(item => item.flower.toString() === flowerId);
+      const cartItemIndex = user.cart.items.findIndex(item => item.flower.toString() === flowerId);
       
       if (cartItemIndex > -1) {
-        user.cart[0].items[cartItemIndex].quantity += quantity;
+        user.cart.items[cartItemIndex].quantity += quantity;
       } else {
-        user.cart[0].items.push({ flower: flowerId, quantity });
+        user.cart.items.push({ flower: flowerId, quantity });
       }
 
-      user.cart[0].totalAmount = user.cart[0].items.reduce((total, item) => {
+      user.cart.totalAmount = user.cart.items.reduce((total, item) => {
         return total + (item.quantity * flower.price);
       }, 0);
 
@@ -127,20 +123,17 @@ export const userController = {
       res.status(400).json({ message: error.message });
     }
   },
+
   removeFromCart: async (req, res) => {
     try {
       const { userId, flowerId } = req.body;
       const user = await User.findById(userId);
       if (!user) return res.status(404).json({ message: "User not found" });
 
-      if (!user.cart || user.cart.length === 0) {
-        return res.status(400).json({ message: "Cart is empty" });
-      }
+      user.cart.items = user.cart.items.filter(item => item.flower.toString() !== flowerId);
 
-      user.cart[0].items = user.cart[0].items.filter(item => item.flower.toString() !== flowerId);
-
-      const flowers = await Flower.find({ _id: { $in: user.cart[0].items.map(item => item.flower) } });
-      user.cart[0].totalAmount = user.cart[0].items.reduce((total, item) => {
+      const flowers = await Flower.find({ _id: { $in: user.cart.items.map(item => item.flower) } });
+      user.cart.totalAmount = user.cart.items.reduce((total, item) => {
         const flower = flowers.find(f => f._id.toString() === item.flower.toString());
         return total + (item.quantity * flower.price);
       }, 0);
@@ -151,25 +144,22 @@ export const userController = {
       res.status(400).json({ message: error.message });
     }
   },
+
   updateCartItemQuantity: async (req, res) => {
     try {
       const { userId, flowerId, quantity } = req.body;
       const user = await User.findById(userId);
       if (!user) return res.status(404).json({ message: "User not found" });
 
-      if (!user.cart || user.cart.length === 0) {
-        return res.status(400).json({ message: "Cart is empty" });
-      }
-
-      const cartItemIndex = user.cart[0].items.findIndex(item => item.flower.toString() === flowerId);
+      const cartItemIndex = user.cart.items.findIndex(item => item.flower.toString() === flowerId);
       if (cartItemIndex === -1) {
         return res.status(404).json({ message: "Item not found in cart" });
       }
 
-      user.cart[0].items[cartItemIndex].quantity = quantity;
+      user.cart.items[cartItemIndex].quantity = quantity;
 
-      const flowers = await Flower.find({ _id: { $in: user.cart[0].items.map(item => item.flower) } });
-      user.cart[0].totalAmount = user.cart[0].items.reduce((total, item) => {
+      const flowers = await Flower.find({ _id: { $in: user.cart.items.map(item => item.flower) } });
+      user.cart.totalAmount = user.cart.items.reduce((total, item) => {
         const flower = flowers.find(f => f._id.toString() === item.flower.toString());
         return total + (item.quantity * flower.price);
       }, 0);
@@ -180,31 +170,29 @@ export const userController = {
       res.status(400).json({ message: error.message });
     }
   },
+
   clearCart: async (req, res) => {
     try {
       const { userId } = req.body;
       const user = await User.findById(userId);
       if (!user) return res.status(404).json({ message: "User not found" });
 
-      user.cart = [{ items: [], totalAmount: 0 }];
+      user.cart = { items: [], totalAmount: 0 };
       await user.save();
       res.json({ message: "Cart cleared successfully" });
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
   },
+
   getCart: async (req, res) => {
     try {
       const userId = req.params.userId;
-      const user = await User.findById(userId).populate('cart.0.items.flower');
+      const user = await User.findById(userId).populate('cart.items.flower');
       if (!user) return res.status(404).json({ message: "User not found" });
 
-      if (!user.cart || user.cart.length === 0) {
-        return res.json({ items: [], totalAmount: 0, itemCount: 0 });
-      }
-
-      const cartItems = user.cart[0].items;
-      const totalAmount = user.cart[0].totalAmount;
+      const cartItems = user.cart.items;
+      const totalAmount = user.cart.totalAmount;
       const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
       res.json({ items: cartItems, totalAmount, itemCount });
