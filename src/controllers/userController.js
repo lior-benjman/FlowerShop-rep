@@ -193,6 +193,25 @@ export const userController = {
       res.status(400).json({ message: error.message });
     }
   },
+  getCart: async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const user = await User.findById(userId).populate('cart.0.items.flower');
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      if (!user.cart || user.cart.length === 0) {
+        return res.json({ items: [], totalAmount: 0, itemCount: 0 });
+      }
+
+      const cartItems = user.cart[0].items;
+      const totalAmount = user.cart[0].totalAmount;
+      const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+
+      res.json({ items: cartItems, totalAmount, itemCount });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
 
   //Password
   changePassword: async (req, res) => {

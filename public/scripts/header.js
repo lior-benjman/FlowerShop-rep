@@ -39,7 +39,19 @@ document.addEventListener('DOMContentLoaded', function() {
         return userButton;
     }
 
-    function updateHeader() {
+    async function getCartItemCount() {
+        if (!user) return 0;
+        try {
+            const response = await fetch(`/api/auth/cart/${user.id}`);
+            const data = await response.json();
+            return data.itemCount || 0;
+        } catch (error) {
+            console.error('Error fetching cart:', error);
+            return 0;
+        }
+    }
+
+    async function updateHeader() {
         userActionsDiv.innerHTML = '';
 
         if (user && user.username) {
@@ -49,9 +61,10 @@ document.addEventListener('DOMContentLoaded', function() {
             userActionsDiv.appendChild(createLoginButton());
         }
 
+        const itemCount = await getCartItemCount();
         const cartLink = document.createElement('a');
-        cartLink.href = "cart.html";
-        cartLink.textContent = "Cart (0)";
+        cartLink.href = "#";
+        cartLink.textContent = `Cart (${itemCount})`;
         userActionsDiv.appendChild(cartLink);
     }
 
