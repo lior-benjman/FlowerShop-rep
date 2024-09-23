@@ -29,6 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function loadProducts() {
         const products = await fetchProducts();
+        if(!products){
+            return;
+        }
         products.forEach(product => {
             const productElement = createProductElement(product);
             productGrid.appendChild(productElement);

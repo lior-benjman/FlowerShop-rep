@@ -29,8 +29,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function createUserButton(username) {
-        const userButton = createButton(username, 'login-button', () => window.location.href = 'profile.html');
+    function createUserButton(username, isAdmin) {
+        const userButton = createButton(username, 'login-button', () => {
+            if (user && isAdmin) {
+                window.location.href = 'admin.html';
+            } else {
+                window.location.href = 'profile.html';
+            }
+        });
         const img = document.createElement('img');
         img.src = "../images/user2_white_corrected.png";
         img.alt = "User Icon";
@@ -52,10 +58,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function updateHeader() {
+        const isAdmin = await checkAdminStatus();
         userActionsDiv.innerHTML = '';
-
         if (user && user.username) {
-            userActionsDiv.appendChild(createUserButton(user.username));
+            userActionsDiv.appendChild(createUserButton(user.username, isAdmin));
             userActionsDiv.appendChild(createLogoutButton());
         } else {
             userActionsDiv.appendChild(createLoginButton());
@@ -63,9 +69,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const itemCount = await getCartItemCount();
         const cartLink = document.createElement('a');
-        cartLink.href = "#";
+        cartLink.href = "cart.html";
         cartLink.textContent = `Cart (${itemCount})`;
         userActionsDiv.appendChild(cartLink);
+    }
+
+    async function checkAdminStatus() {
+        const token = localStorage.getItem('token');
+        if (!token) return false;
+
+        try {
+            const response = await fetch('/api/admin/check', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.status === 403) {
+                return false; // User is not an admin
+            }
+            if (!response.ok) throw new Error('Network response was not ok');
+            const data = await response.json();
+            return data.isAdmin;
+        } catch (error) {
+            console.error('Error checking admin status:', error);
+            return false;
+        }
     }
 
     updateHeader();
