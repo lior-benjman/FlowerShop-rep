@@ -50,7 +50,7 @@ export const userController = {
     }
   },
 
-  //Login
+  //Registration
 
   login: async (req, res) => {
     try {
@@ -68,6 +68,32 @@ export const userController = {
     }
   },
 
+  signup: async (req, res) => {
+    try {
+      const { username, email, password } = req.body;
+
+      const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+      if (existingUser) {
+        return res.status(400).json({ message: "Username or email already exists" });
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      const newUser = new User({
+        username,
+        email,
+        password: hashedPassword
+      });
+
+      await newUser.save();
+
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      res.status(201).json({ token, user: { id: newUser._id, username: newUser.username } });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
 
   //Cart
   addToCart: async (req, res) => {
