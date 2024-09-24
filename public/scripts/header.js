@@ -57,13 +57,36 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    async function checkTokenValidity() {
+        const token = localStorage.getItem('token');
+        if (!token) return false;
+
+        try {
+            const response = await fetch('/api/auth/check-token', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) throw new Error('Token invalid');
+            return true;
+        } catch (error) {
+            console.error('Error checking token validity:', error);
+            return false;
+        }
+    }
+
+
     async function updateHeader() {
-        const isAdmin = await checkAdminStatus();
+        const isTokenValid = await checkTokenValidity();
+        const isAdmin = isTokenValid && await checkAdminStatus();
         userActionsDiv.innerHTML = '';
-        if (user && user.username) {
+        if (isTokenValid && user && user.username) {
             userActionsDiv.appendChild(createUserButton(user.username, isAdmin));
             userActionsDiv.appendChild(createLogoutButton());
         } else {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
             userActionsDiv.appendChild(createLoginButton());
         }
 
