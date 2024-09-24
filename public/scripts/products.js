@@ -1,17 +1,27 @@
 document.addEventListener('DOMContentLoaded', function() {
     const productGrid = document.querySelector('.product-grid');
     const loadMoreButton = document.querySelector('.load-more button');
+    const viewAllButton = document.querySelector('.view-all button');
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewAll = urlParams.get('viewAll') === 'true';
+
     let page = 1;
     const limit = 4;
+    let isShopPage = window.location.pathname.includes('shop.html');
 
-    async function fetchProducts() {
+
+    async function fetchProducts(pageNum, pageLimit, viewAll = false) {
         try {
-            const response = await fetch(`/api/flowers?page=${page}&limit=${limit}`);
+            const url = viewAll 
+                ? `/api/flowers?viewAll=true` 
+                : `/api/flowers?page=${pageNum}&limit=${pageLimit}`;
+            const response = await fetch(url);
             const products = await response.json();
             return products;
         } catch (error) {
             console.error('Error fetching products:', error);
-            return [];
+            return { flowers: [] };
         }
     }
 
@@ -27,21 +37,43 @@ document.addEventListener('DOMContentLoaded', function() {
         return productItem;
     }
 
-    async function loadProducts() {
-        const products = await fetchProducts();
-        if(!products){
+    async function loadProducts(pageNum = page, pageLimit = limit) {
+        const productsData = await fetchProducts(pageNum, pageLimit);
+        const products = productsData.flowers;
+        
+        if (!products || products.length < 1) {
+            loadMoreButton.style.display = 'none';
             return;
         }
+        
         products.forEach(product => {
             const productElement = createProductElement(product);
             productGrid.appendChild(productElement);
         });
-
-        if (products.length < limit) {
+    
+        if (products.length < pageLimit) {
             loadMoreButton.style.display = 'none';
         } else {
             page++;
         }
+    }
+
+    async function viewAllProducts() {
+        if (!isShopPage) {
+            window.location.href = 'shop.html?viewAll=true';
+        } else {
+            productGrid.innerHTML = '';
+            loadMoreButton.style.display = 'none';
+            
+            const productsData = await fetchProducts(1, 1000, true);
+            const products = productsData.flowers;
+            
+            products.forEach(product => {
+                const productElement = createProductElement(product);
+                productGrid.appendChild(productElement);
+            });
+        }
+        viewAllButton.style.display = 'none';
     }
 
     async function addToCart(productId) {
@@ -77,7 +109,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    loadMoreButton.addEventListener('click', loadProducts);
+    if (loadMoreButton) {
+        loadMoreButton.addEventListener('click', () => loadProducts());
+    }
+    
+    if (viewAllButton) {
+        viewAllButton.addEventListener('click', viewAllProducts);
+    }
+
 
     productGrid.addEventListener('click', function(event) {
         if (event.target.classList.contains('add-to-cart')) {
@@ -86,5 +125,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    loadProducts();
+
+    if (viewAll) {
+        viewAllProducts();
+    } else {
+        loadProducts();
+    }
+
+
+
 });

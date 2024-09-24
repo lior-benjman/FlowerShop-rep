@@ -14,18 +14,24 @@ export const flowerController = {
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
-      const skip = (page - 1) * limit;
-
-      const flowers = await Flower.find()
-        .skip(skip)
-        .limit(limit);
-
-      const total = await Flower.countDocuments();
-
+      const viewAll = req.query.viewAll === 'true';
+  
+      let flowers;
+      let total;
+  
+      if (viewAll) {
+        flowers = await Flower.find();
+        total = flowers.length;
+      } else {
+        const skip = (page - 1) * limit;
+        flowers = await Flower.find().skip(skip).limit(limit);
+        total = await Flower.countDocuments();
+      }
+  
       res.json({
         flowers,
-        currentPage: page,
-        totalPages: Math.ceil(total / limit),
+        currentPage: viewAll ? 1 : page,
+        totalPages: viewAll ? 1 : Math.ceil(total / limit),
         totalItems: total
       });
     } catch (error) {
