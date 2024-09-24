@@ -10,24 +10,46 @@ export const flowerController = {
       res.status(400).json({ message: error.message });
     }
   },
-  getAll: async (req, res) => {
+
+ getAll: async (req, res) => {
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
       const viewAll = req.query.viewAll === 'true';
-  
-      let flowers;
-      let total;
-  
-      if (viewAll) {
-        flowers = await Flower.find();
-        total = flowers.length;
-      } else {
-        const skip = (page - 1) * limit;
-        flowers = await Flower.find().skip(skip).limit(limit);
-        total = await Flower.countDocuments();
+
+      let query = {};
+      let sort = {};
+
+      if (req.query.search) {
+        query.$or = [
+          { name: { $regex: req.query.search, $options: 'i' } },
+          { description: { $regex: req.query.search, $options: 'i' } }
+        ];
       }
-  
+
+      if (req.query.category) {
+        query.category = req.query.category;
+      }
+
+      if (req.query.color) {
+        query.color = req.query.color;
+      }
+
+      if (req.query.sort) {
+        const [field, order] = req.query.sort.split('-');
+        sort[field] = order === 'asc' ? 1 : -1;
+      }
+
+      let flowerQuery = Flower.find(query).sort(sort);
+
+      if (!viewAll) {
+        const skip = (page - 1) * limit;
+        flowerQuery = flowerQuery.skip(skip).limit(limit);
+      }
+
+      const flowers = await flowerQuery;
+      const total = await Flower.countDocuments(query);
+
       res.json({
         flowers,
         currentPage: viewAll ? 1 : page,
@@ -36,6 +58,20 @@ export const flowerController = {
       });
     } catch (error) {
       res.status(500).json({ message: error.message });
+    }
+  },
+
+  getFilterOptions: async (req, res) => {
+    try {
+      const categories = await Flower.distinct('category');
+      const colors = await Flower.distinct('color');
+  
+      res.json({
+        categories,
+        colors
+      });
+    } catch (error) {
+      res.status(500).json({ message: error.message, stack: error.stack });
     }
   },
   getById: async (req, res) => {
