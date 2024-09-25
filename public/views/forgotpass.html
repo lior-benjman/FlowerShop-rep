@@ -8,40 +8,39 @@
 </head>
 <body>
     <header>
-            <div class="banner">
-                    <video  autoplay muted loop id="myVideo">
-                    <source src="../videos/banner.mp4" type="video/mp4"></video>
-                <nav>
-                    <div class="logo">C</div>
-                        <ul>
-                            <li><a href="../views/index.html">Home</a></li>
-                            <li><a href="../views/shop.html">Shop</a></li>
-                            <li><a href="../views/aboutus.html">About</a></li>
-                            <li><a href="../views/contactus.html">Contact</a></li>
-                        </ul>
-                    <div class="user-actions">
-                        <button class="login-button" onclick="window.location.href='login.html'">
-                            <img src="../images/user2_white_corrected.png" alt="Login Icon" class="login-icon"> Log In
-                        </button>            
-                        <a href="#">Cart (0)</a>
+        <div class="banner">
+                <video  autoplay muted loop id="myVideo">
+                <source src="../videos/banner.mp4" type="video/mp4"></video>
+            <nav>
+                <div class="logo">C</div>
+                <ul>
+                    <li><a href="../views/index.html">Home</a></li>
+                    <li><a href="../views/shop.html">Shop</a></li>
+                    <li><a href="../views/aboutus.html">About</a></li>
+                    <li><a href="../views/contactus.html">Contact</a></li>
+                </ul>
+                <div class="user-actions"></div>
+            </nav>
+            <div class = "banner-content">
+                <h1>Flower for Nurit</h1>
+                <section id="login" class="login-section">
+                    <div class="login-container">
+                        <div class="login-form">
+                            <h2>Password Recovery</h2>
+                            <h3>Please provide us with the next details for your account recovery.</h3>
+                            <form id="register-form">
+                                <input type="text" id="username" name="username" placeholder="Name of the registered account" required>
+                                <input type="email" id="email" name="email" placeholder="Email" required>
+                                <button type="submit">Confirm</button>
+                            </form>
+                            
+                            <a href="../views/signup.html" class="forgot-password">Dont have a registered account yet?</a>
+                        </div>
                     </div>
-                </nav>
-                <div class = "banner-content">
-                    <h1>Flower for Nurit</h1>
-                    <section id="login" class="login-section">
-                        <div class="login-container">
-                            <div class="login-form">
-                                <h2>Password Recovery</h2>
-                                <h3>Please provide us with the next details for your account recovery.</h3>
-                                <form id="register-form">
-                                    <input type="text" id="username" name="username" placeholder="Name of the registered account" required>
-                                    <input type="email" id="email" name="email" placeholder="Email" required>
-                                    <button type="submit">Confirm</button>
-                                </form>
-                                
-                                <a href="../views/signup.html" class="forgot-password">Dont have a registered account yet?</a>
-                            </div>
-                </div></div>
+                </section>
+            </div>
+        </div>
+        <script src="../scripts/header.js" defer></script>
     </header>
     <div class = "pos2">
     </div>

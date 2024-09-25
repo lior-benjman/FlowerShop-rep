@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename);
 
 export const app = express();
 
+app.use(express.json());
 
 app.use(express.static(path.join(__dirname, '..', '..', 'public')));
 
@@ -18,20 +19,12 @@ app.set('view engine', 'html');
 
 app.set('views', path.join(__dirname, '..', '..', 'public', 'views'));
 
-await registerAllRoutes(app);
+registerAllRoutes(app);
 
 app.get('/', (req, res) => {
     res.render('index');
 });
   
-app.get('/about', (req, res) => {
-    res.render('about');
-});
-  
-app.get('/contact', (req, res) => {
-    res.render('contact');
-});
-
 
 app.use((req, res) => {
     res.status(404).render('404');

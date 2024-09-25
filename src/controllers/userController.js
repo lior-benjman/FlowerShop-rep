@@ -1,5 +1,6 @@
 import User from "../schema/models/User.js";
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 export const userController = {
 
@@ -49,6 +50,56 @@ export const userController = {
     }
   },
 
+  //Registration
+
+  login: async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      const user = await User.findOne({ username });
+      if (!user) return res.status(400).json({ message: "User not found" });
+
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+
+      const token = jwt.sign(
+        { id: user._id, isAdmin: user.isAdmin },
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' }
+      );
+
+      res.json({ token, user: { id: user._id, username: user.username } });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
+  signup: async (req, res) => {
+    try {
+      const { username, email, password } = req.body;
+
+      const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+      if (existingUser) {
+        return res.status(400).json({ message: "Username or email already exists" });
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
+      const newUser = new User({
+        username,
+        email,
+        password: hashedPassword
+      });
+
+      await newUser.save();
+
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      res.status(201).json({ token, user: { id: newUser._id, username: newUser.username } });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+
   //Cart
   addToCart: async (req, res) => {
     try {
@@ -59,19 +110,15 @@ export const userController = {
       const flower = await Flower.findById(flowerId);
       if (!flower) return res.status(404).json({ message: "Flower not found" });
 
-      if (!user.cart || user.cart.length === 0) {
-        user.cart = [{ items: [], totalAmount: 0 }];
-      }
-
-      const cartItemIndex = user.cart[0].items.findIndex(item => item.flower.toString() === flowerId);
+      const cartItemIndex = user.cart.items.findIndex(item => item.flower.toString() === flowerId);
       
       if (cartItemIndex > -1) {
-        user.cart[0].items[cartItemIndex].quantity += quantity;
+        user.cart.items[cartItemIndex].quantity += quantity;
       } else {
-        user.cart[0].items.push({ flower: flowerId, quantity });
+        user.cart.items.push({ flower: flowerId, quantity });
       }
 
-      user.cart[0].totalAmount = user.cart[0].items.reduce((total, item) => {
+      user.cart.totalAmount = user.cart.items.reduce((total, item) => {
         return total + (item.quantity * flower.price);
       }, 0);
 
@@ -81,20 +128,17 @@ export const userController = {
       res.status(400).json({ message: error.message });
     }
   },
+
   removeFromCart: async (req, res) => {
     try {
       const { userId, flowerId } = req.body;
       const user = await User.findById(userId);
       if (!user) return res.status(404).json({ message: "User not found" });
 
-      if (!user.cart || user.cart.length === 0) {
-        return res.status(400).json({ message: "Cart is empty" });
-      }
+      user.cart.items = user.cart.items.filter(item => item.flower.toString() !== flowerId);
 
-      user.cart[0].items = user.cart[0].items.filter(item => item.flower.toString() !== flowerId);
-
-      const flowers = await Flower.find({ _id: { $in: user.cart[0].items.map(item => item.flower) } });
-      user.cart[0].totalAmount = user.cart[0].items.reduce((total, item) => {
+      const flowers = await Flower.find({ _id: { $in: user.cart.items.map(item => item.flower) } });
+      user.cart.totalAmount = user.cart.items.reduce((total, item) => {
         const flower = flowers.find(f => f._id.toString() === item.flower.toString());
         return total + (item.quantity * flower.price);
       }, 0);
@@ -105,25 +149,22 @@ export const userController = {
       res.status(400).json({ message: error.message });
     }
   },
+
   updateCartItemQuantity: async (req, res) => {
     try {
       const { userId, flowerId, quantity } = req.body;
       const user = await User.findById(userId);
       if (!user) return res.status(404).json({ message: "User not found" });
 
-      if (!user.cart || user.cart.length === 0) {
-        return res.status(400).json({ message: "Cart is empty" });
-      }
-
-      const cartItemIndex = user.cart[0].items.findIndex(item => item.flower.toString() === flowerId);
+      const cartItemIndex = user.cart.items.findIndex(item => item.flower.toString() === flowerId);
       if (cartItemIndex === -1) {
         return res.status(404).json({ message: "Item not found in cart" });
       }
 
-      user.cart[0].items[cartItemIndex].quantity = quantity;
+      user.cart.items[cartItemIndex].quantity = quantity;
 
-      const flowers = await Flower.find({ _id: { $in: user.cart[0].items.map(item => item.flower) } });
-      user.cart[0].totalAmount = user.cart[0].items.reduce((total, item) => {
+      const flowers = await Flower.find({ _id: { $in: user.cart.items.map(item => item.flower) } });
+      user.cart.totalAmount = user.cart.items.reduce((total, item) => {
         const flower = flowers.find(f => f._id.toString() === item.flower.toString());
         return total + (item.quantity * flower.price);
       }, 0);
@@ -134,17 +175,34 @@ export const userController = {
       res.status(400).json({ message: error.message });
     }
   },
+
   clearCart: async (req, res) => {
     try {
       const { userId } = req.body;
       const user = await User.findById(userId);
       if (!user) return res.status(404).json({ message: "User not found" });
 
-      user.cart = [{ items: [], totalAmount: 0 }];
+      user.cart = { items: [], totalAmount: 0 };
       await user.save();
       res.json({ message: "Cart cleared successfully" });
     } catch (error) {
       res.status(400).json({ message: error.message });
+    }
+  },
+
+  getCart: async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const user = await User.findById(userId).populate('cart.items.flower');
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      const cartItems = user.cart.items;
+      const totalAmount = user.cart.totalAmount;
+      const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+
+      res.json({ items: cartItems, totalAmount, itemCount });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
   },
 

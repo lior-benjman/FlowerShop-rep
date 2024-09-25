@@ -3,6 +3,8 @@ import { flowerController } from '../controllers/flowerController.js';
 
 const flowerRouter = express.Router();
 
+flowerRouter.get('/filter-options', flowerController.getFilterOptions);
+
 flowerRouter.post('/', flowerController.create);
 flowerRouter.get('/', flowerController.getAll);
 flowerRouter.get('/:id', flowerController.getById);
@@ -16,5 +18,6 @@ flowerRouter.put('/stock', flowerController.updateStock);
 
 flowerRouter.get('/top-selling', flowerController.getTopSellingFlowers);
 flowerRouter.get('/new-arrivals', flowerController.getNewArrivals);
+
 
 export default flowerRouter;
