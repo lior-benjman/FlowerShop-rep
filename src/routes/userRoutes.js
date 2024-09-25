@@ -13,6 +13,7 @@ userRouter.post('/cart/add', userController.addToCart);
 userRouter.post('/cart/remove', userController.removeFromCart);
 userRouter.put('/cart/update', userController.updateCartItemQuantity);
 userRouter.post('/cart/clear', userController.clearCart);
+userRouter.get('/cart/:userId', userController.getCart);
 
 userRouter.put('/change-password', userController.changePassword);
 

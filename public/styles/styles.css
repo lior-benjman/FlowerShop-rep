@@ -110,6 +110,21 @@ header nav{
     border-width:0.35mm;
 }
 
+.logout-button {
+    font-size: 16px;
+    color: white;
+    background-color: transparent;
+    font-family: 'AvenirNext-UltraLight', sans-serif;
+    align-items: center;
+    text-align: center;
+    border-radius: 4mm;
+    padding: 5px 12px 3px 10px;
+    cursor: pointer;
+    border: 0.3mm solid rgba(236, 230, 230, 0.339);
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+}
+
 .login-icon {
     display: flexbox;
     align-items: center;
@@ -117,8 +132,13 @@ header nav{
     width: 26px;
     height: 22px;
 }
+
 .login-button:hover{
     background-color: rgba(255, 255, 255, 0.152);
+}
+
+.logout-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 nav {

@@ -9,13 +9,13 @@ const userSchema = new mongoose.Schema({
   address: String,
   isAdmin: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
-  cart: [
-    {items: [{
+  cart: {
+    items: [{
       flower: { type: mongoose.Schema.Types.ObjectId, ref: 'Flower', required: true },
       quantity: { type: Number, required: true, min: 1 }
-    }]},
-    {totalAmount: { type: Number, required: true }}
-  ]
+    }],
+    totalAmount: { type: Number, default: 0 }
+  }
 });
 
 const User = mongoose.model('User', userSchema);
