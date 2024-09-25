@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let filters = {};
 
         if(!isIndexPage){
-            const filters = {
+            filters = {
                 search: searchInput.value,
                 sort: sortSelect.value,
                 category: categorySelect.value,

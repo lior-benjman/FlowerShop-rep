@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function createUserButton(username, isAdmin) {
         const userButton = createButton(username, 'login-button', () => {
             if (user && isAdmin) {
-                window.location.href = 'admin.html';
+                window.location.href = 'index_M.html';
             } else {
                 window.location.href = 'profile.html';
             }

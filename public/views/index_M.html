@@ -4,36 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manager Dashboard</title>
-    <link rel="stylesheet" href="styles_M.css">
+    <link rel="stylesheet" href="../styles/styles_M.css">
+    <link rel="stylesheet" href="../styles/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 <body>
-    <div class="background-container"></div>
-<!-- ***Top Bar*** -->
-    <div class="shadow-overlay"></div>
+    <header>
+        <!--
+        <div class="background-container"></div>
+        <div class="shadow-overlay"></div>
+        -->
+        
         <div class="banner">
             <nav>
                 <div class="logo">C</div>
-                    <ul>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Dashboard</a></li>
-                        <li><a href="#">Reports</a></li>
-                        <li><a href="#">Settings</a></li>
-                    </ul>
-                <div class="user-actions">
-                    <button class="logout-button">Log Out</button>
-                </div>
+                <ul>
+                    <li><a href="../views/index.html">Home</a></li>
+                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="#">Reports</a></li>
+                    <li><a href="#">Settings</a></li>
+                </ul>
+                <div class="user-actions"></div>
             </nav>
-<!-- ***Title*** -->
+
             <div class="banner-content">
                 <h1>Manager Dashboard</h1>
                 <h2>Track your sales, manage inventory, and view recent orders.</h2>
             </div>
         </div>
+        <script src="../scripts/header.js" defer></script>
     </header>
     
-<!-- ***start data opening*** -->
     <section class = "opening-list">
         <div class="orders-section">
             <h2>Recent Orders</h2>
@@ -75,41 +77,32 @@
         </div>
     </section>
 <!-- *** end grafs *** -->
-    
-<!-- *** start sellers *** -->
 
-<section class = "sellers-list">
-    <div class="sellers-section">
-        <h2>Best Sellers</h2>
-        <ul class="best-sellers-list">
-            <li>Roses #12345 - larg bouquet</li>
-            <li>Mix flowers #12346 - xlarg bouquet</li>
-            <li>Orchids #12347 - tiny bouquet</li>
-        </ul>
-    </div>
-    <div class="recently-added">
-        <h2>Recently Added</h2>
-        <ul class="added-list">
-            <li>Purple chrysanthemums - Israel</li>
-            <li>Sunflowers - North America</li>
-        </ul>
-    </div>
-    <!-- <div class="empty">
-        <h2>empty</h2>
-        <div class="empty-box">
-            <p>empty.</p>
+
+    <section class = "sellers-list">
+        <div class="sellers-section">
+            <h2>Best Sellers</h2>
+            <ul class="best-sellers-list">
+                <li>Roses #12345 - larg bouquet</li>
+                <li>Mix flowers #12346 - xlarg bouquet</li>
+                <li>Orchids #12347 - tiny bouquet</li>
+            </ul>
         </div>
-    </div> -->
-</section>
-
-
-<!-- *** end sellers *** -->
-    <footer>
-        <div class="footer-section">
-            <h3>Flower Shop</h3>
-            <p>Manager Dashboard</p>
+        <div class="recently-added">
+            <h2>Recently Added</h2>
+            <ul class="added-list">
+                <li>Purple chrysanthemums - Israel</li>
+                <li>Sunflowers - North America</li>
+            </ul>
         </div>
-    </footer>
+        <!-- <div class="empty">
+            <h2>empty</h2>
+            <div class="empty-box">
+                <p>empty.</p>
+            </div>
+        </div> -->
+    </section>
+
 
     <section class = "inventory-class">
         <div class="inventory-section">
@@ -198,6 +191,7 @@
     </section>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!--
     <script>
         // Expenses Chart
         var ctx2 = document.getElementById('expensesChart').getContext('2d');
@@ -473,7 +467,10 @@
             document.getElementById('editModal').style.display = 'none';
         });
     </script>
+                -->
 
+
+    <script src="../scripts/chart.js"></script>
 </body>
 
 </html>
