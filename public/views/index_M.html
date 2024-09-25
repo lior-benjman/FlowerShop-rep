@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard</title>
+    <link rel="stylesheet" href="styles_M.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+    <div class="background-container"></div>
+<!-- ***Top Bar*** -->
+    <div class="shadow-overlay"></div>
+        <div class="banner">
+            <nav>
+                <div class="logo">C</div>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Dashboard</a></li>
+                        <li><a href="#">Reports</a></li>
+                        <li><a href="#">Settings</a></li>
+                    </ul>
+                <div class="user-actions">
+                    <button class="logout-button">Log Out</button>
+                </div>
+            </nav>
+<!-- ***Title*** -->
+            <div class="banner-content">
+                <h1>Manager Dashboard</h1>
+                <h2>Track your sales, manage inventory, and view recent orders.</h2>
+            </div>
+        </div>
+    </header>
+    
+<!-- ***start data opening*** -->
+    <section class = "opening-list">
+        <div class="orders-section">
+            <h2>Recent Orders</h2>
+            <ul class="orders-list">
+                <li>Order #12345 - Shipped</li>
+                <li>Order #12346 - Processing</li>
+                <li>Order #12347 - Completed</li>
+            </ul>
+        </div>
+        <div class="employees-section">
+            <h2>Employee Management</h2>
+            <ul class="employees-list">
+                <li>Employee A - On Shift</li>
+                <li>Employee B - Off Shift</li>
+            </ul>
+        </div>
+        <div class="notifications-section">
+            <h2>Important Notifications</h2>
+            <div class="notifications-box">
+                <p>No new notifications.</p>
+            </div>
+        </div>
+    </section>
+<!-- ***end data opening*** -->
+
+<!-- *** start grafs *** -->
+    <section class="graph-list">
+        <div class="graph-item">
+            <h3>Expenses</h3>
+            <canvas id="expensesChart"></canvas>
+        </div>
+        <div class="graph-item">
+            <h3>Income</h3>
+            <canvas id="incomeChart"></canvas>
+        </div>
+        <div class="graph-item">
+            <h3>Sales Statistics</h3>
+            <canvas id="salesChart"></canvas>
+        </div>
+    </section>
+<!-- *** end grafs *** -->
+    
+<!-- *** start sellers *** -->
+
+<section class = "sellers-list">
+    <div class="sellers-section">
+        <h2>Best Sellers</h2>
+        <ul class="best-sellers-list">
+            <li>Roses #12345 - larg bouquet</li>
+            <li>Mix flowers #12346 - xlarg bouquet</li>
+            <li>Orchids #12347 - tiny bouquet</li>
+        </ul>
+    </div>
+    <div class="recently-added">
+        <h2>Recently Added</h2>
+        <ul class="added-list">
+            <li>Purple chrysanthemums - Israel</li>
+            <li>Sunflowers - North America</li>
+        </ul>
+    </div>
+    <!-- <div class="empty">
+        <h2>empty</h2>
+        <div class="empty-box">
+            <p>empty.</p>
+        </div>
+    </div> -->
+</section>
+
+
+<!-- *** end sellers *** -->
+    <footer>
+        <div class="footer-section">
+            <h3>Flower Shop</h3>
+            <p>Manager Dashboard</p>
+        </div>
+    </footer>
+
+    <section class = "inventory-class">
+        <div class="inventory-section">
+            <h2>Inventory Management</h2>
+            <table class="inventory-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Stock Level</th>
+                        <th>Reorder</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>White Narcissus Bouquet</td>
+                        <td>50</td>
+                        <td><button>Reorder</button></td>
+                    </tr>
+                    <tr>
+                        <td>Hydrangea Bouquet</td>
+                        <td>20</td>
+                        <td><button>Reorder</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="edit-flower-section">
+            <h2>Edit Poducts</h2>
+            <button id="editBtn">Edit</button>
+        
+            <div id="actionButtons" style="display: none;">
+                <button id="addProductBtn">Add</button>
+                <button id="deleteProductBtn">Delete</button>
+                <button id="editProductBtn">Edit</button>
+            </div>
+        
+            <form id="addFlowerForm" style="display: none;">
+                <label for="flowerName">Name:</label>
+                <input type="text" id="flowerName" name="flowerName" required><br><br>
+        
+                <label for="flowerPrice">Price:</label>
+                <input type="number" id="flowerPrice" name="flowerPrice" required><br><br>
+        
+                <label for="flowerDescription">Description:</label>
+                <textarea id="flowerDescription" name="flowerDescription" required></textarea><br><br>
+                
+                <label for="flowerImage">Image:</label>
+                <input type="file" id="flowerImage" name="flowerImage" accept="image/*"><br><br>
+        
+                <button type="submit">Add</button>
+            </form>
+            <div id="flowersList" class="product-grid" style="display: none;">
+                <div class="product-item">
+                    <img src="../../public/images/01.png" alt="White Narcissus Bouquet">
+                    <p>White Narcissus Bouquet</p>
+                    <p class="price"><span class="old-price">75.00 ₪</span> 67.50 ₪</p>
+                </div>
+                <div class="product-item">
+                    <img src="../../public/images/02.png" alt="Warm-Toned Gerbera and Freesia Bouquet">
+                    <p>Warm-Toned Gerbera and Freesia Bouquet</p>
+                    <p class="price"><span class="old-price">75.00 ₪</span> 67.50 ₪</p>
+                </div>
+                <div class="product-item">
+                    <img src="../../public/images/03.png" alt="Elegant Hydrangea Duo">
+                    <p>Elegant Hydrangea Duo</p>
+                    <p class="price">75.00 ₪</p>
+                </div>
+            </div>
+            
+        </div>
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeEditModal">&times;</span>
+                <div class="modal-header">Edit</div>
+                <label for="editName">Name:</label>
+                <input type="text" id="editName"><br><br>
+                <label for="editPrice">Price:</label>
+                <input type="number" id="editPrice"><br><br>
+                <label for="editDescription">Description:</label>
+                <textarea id="editDescription"></textarea><br><br>
+                <div class="modal-footer">
+                    <button class="edit-btn" id="saveEdit">Save</button>
+                    <button class="cancel-btn" id="cancelEdit">Cancle</button>
+                </div>
+            </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Expenses Chart
+        var ctx2 = document.getElementById('expensesChart').getContext('2d');
+        var expensesChart = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['Rent', 'Supplies', 'Utilities', 'Wages', 'Marketing'],
+                datasets: [{
+                    label: 'Expenses by Month',
+                    data: [500, 300, 200, 700, 150],
+                    backgroundColor: 'rgba(255, 99, 132, 0.65)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 16,
+                                family: "'Avenir Next', sans-serif", 
+                            },
+                            color: 'rgba(85, 59, 106, 1)', 
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                family: "'Avenir Next', sans-serif",
+                                size: 16, 
+                            },
+                            color: 'rgba(0,0,0)',
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 16,
+                                weight: 'lighter', 
+                            },
+                            color: 'rgba(85, 59, 106, 1)' 
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Monthly expense chart',
+                        font: {
+                            size: 24, 
+                            family: "'Avenir', sans-serif", 
+                            weight: 'lighter', 
+                        },
+                        color: 'rgba(85, 59, 106, 1)' 
+                    }
+                }
+            }
+        });
+
+        var ctx3 = document.getElementById('incomeChart').getContext('2d');
+        var incomeChart = new Chart(ctx3,{
+            type: 'pie',
+            data: {
+                labels: ['Sales', 'Delivery Fees', 'Special Orders', 'Workshops'],
+                datasets: [{
+                    label: 'Income Distribution',
+                    data: [3000, 500, 2000, 800],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.65)',
+                        'rgba(255, 206, 86, 0.65)',
+                        'rgba(75, 192, 192, 0.65)',
+                        'rgba(153, 102, 255, 0.65)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                   
+                },
+                plugins:{
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 16,
+                                weight: 200, 
+                            },
+                        color: 'rgba(85, 59, 106, 1)' 
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Monthly income chart',
+                        font: {
+                            size: 24, 
+                            family: "'Avenir', sans-serif", 
+                            weight: 'lighter', 
+                        },
+                        color: 'rgba(85, 59, 106, 1)' 
+                    }
+                }
+            }
+        });
+        // Sales Chart
+        var ctx = document.getElementById('salesChart').getContext('2d');
+        var salesChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                datasets: [{
+                    label: 'Monthly Sales',
+                    data: [120, 150, 180, 220, 170, 200, 250],
+                    borderColor: 'rgba(85, 59, 106, 0.8)',
+                    backgroundColor: 'rgba(85, 59, 106, 0.4)',
+                    borderWidth: 2,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            font: {
+                                size: 16,
+                                family: "'Avenir Next', sans-serif", 
+                            },
+                            color: 'rgba(85, 59, 106, 1)', 
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                family: "'Avenir Next', sans-serif",
+                                size: 16, 
+                            },
+                            color: 'rgba(0,0,0)',
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 16,
+                                weight: 200, 
+                            },
+                            color: 'rgba(85, 59, 106, 1)' 
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Monthly Sales Chart',
+                        font: {
+                            size: 24, 
+                            family: "'Avenir', sans-serif", 
+                            weight: 'lighter', 
+                        },
+                        color: 'rgba(85, 59, 106, 1)' 
+                    }
+                }
+            }
+        });
+   
+        document.getElementById('editBtn').addEventListener('click', function () {
+            document.getElementById('actionButtons').style.display = 'block';
+        });
+
+        document.getElementById('addProductBtn').addEventListener('click', function () {
+            document.getElementById('addFlowerForm').style.display = 'block';
+            document.getElementById('flowersList').style.display = 'none';
+        });
+
+        document.getElementById('deleteProductBtn').addEventListener('click', function () {
+            document.getElementById('addFlowerForm').style.display = 'none';
+            document.getElementById('flowersList').style.display = 'block';
+            updateProductGrid('delete');
+        });
+
+        document.getElementById('editProductBtn').addEventListener('click', function () {
+            document.getElementById('addFlowerForm').style.display = 'none';
+            document.getElementById('flowersList').style.display = 'block';
+            updateProductGrid('edit');
+        });
+
+        document.getElementById('addFlowerForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const flowerName = document.getElementById('flowerName').value;
+            const flowerPrice = document.getElementById('flowerPrice').value;
+            const flowerDescription = document.getElementById('flowerDescription').value;
+            const flowerImage = document.getElementById('flowerImage').files[0];
+            const imageURL = flowerImage ? URL.createObjectURL(flowerImage) : '';
+
+            const newFlower = document.createElement('div');
+            newFlower.classList.add('product-item');
+            newFlower.innerHTML = `
+                <img src="${imageURL}" alt="${flowerName}">
+                <p>${flowerName}</p>
+                <p class="price">${flowerPrice} ₪</p>
+                <p>${flowerDescription}</p>
+            `;
+            document.getElementById('flowersList').appendChild(newFlower);
+            document.getElementById('addFlowerForm').reset();
+        });
+
+        function updateProductGrid(action) {
+            const flowers = document.querySelectorAll('.product-item');
+            flowers.forEach(flower => {
+                const existingButton = flower.querySelector('button');
+                if (existingButton) existingButton.remove();
+
+                const button = document.createElement('button');
+                if (action === 'delete') {
+                    button.textContent = 'Delete';
+                    button.className = 'delete-flower-btn';
+                    button.addEventListener('click', () => flower.remove());
+                } else if (action === 'edit') {
+                    button.textContent = 'Edit';
+                    button.className = 'edit-flower-btn';
+                    button.addEventListener('click', () => {
+                        document.querySelectorAll('.product-item').forEach(item => item.classList.remove('editing'));
+                        openEditModal(flower);
+                    });
+                }
+                flower.appendChild(button);
+            });
+        }
+
+        function openEditModal(flower) {
+            const editModal = document.getElementById('editModal');
+            editModal.style.display = 'block';
+
+            const name = flower.querySelector('p:nth-child(2)').textContent;
+            const price = flower.querySelector('.price').textContent.replace(' ₪', '');
+            const description = flower.querySelector('p:nth-child(4)').textContent;
+
+            document.getElementById('editName').value = name;
+            document.getElementById('editPrice').value = price;
+            document.getElementById('editDescription').value = description;
+
+            flower.classList.add('editing');
+        }
+        document.getElementById('closeEditModal').addEventListener('click', () => {
+            document.getElementById('editModal').style.display = 'none';
+        });
+
+        document.getElementById('cancelEdit').addEventListener('click', () => {
+            document.getElementById('editModal').style.display = 'none';
+        });
+
+        document.getElementById('saveEdit').addEventListener('click', () => {
+            const flower = document.querySelector('.editing');
+            if (flower) {
+                flower.querySelector('p:nth-child(2)').textContent = document.getElementById('editName').value;
+                flower.querySelector('.price').textContent = `${document.getElementById('editPrice').value} ₪`;
+                flower.querySelector('p:nth-child(4)').textContent = document.getElementById('editDescription').value;
+            }
+            document.getElementById('editModal').style.display = 'none';
+        });
+    </script>
+
+</body>
+
+</html>
