@@ -12,6 +12,8 @@ adminRouter.get('/check', (req, res) => {
     res.json({ isAdmin: true });
   });
 adminRouter.post('/add-flower', flowerController.create);
+adminRouter.put('/:id/stock', flowerController.updateStock);
+adminRouter.put('/:id', flowerController.update);
 
 
 export default adminRouter;

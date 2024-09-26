@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../styles/styles_M.css">
     <link rel="stylesheet" href="../styles/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../scripts/flowersDashboard.js" defer></script>
 
 </head>
 <body>
@@ -36,6 +37,8 @@
         <script src="../scripts/header.js" defer></script>
     </header>
     
+
+    <!--
     <section class = "opening-list">
         <div class="orders-section">
             <h2>Recent Orders</h2>
@@ -59,9 +62,7 @@
             </div>
         </div>
     </section>
-<!-- ***end data opening*** -->
 
-<!-- *** start grafs *** -->
     <section class="graph-list">
         <div class="graph-item">
             <h3>Expenses</h3>
@@ -76,9 +77,9 @@
             <canvas id="salesChart"></canvas>
         </div>
     </section>
-<!-- *** end grafs *** -->
+-->
 
-
+<!--
     <section class = "sellers-list">
         <div class="sellers-section">
             <h2>Best Sellers</h2>
@@ -95,15 +96,15 @@
                 <li>Sunflowers - North America</li>
             </ul>
         </div>
-        <!-- <div class="empty">
+        < <div class="empty">
             <h2>empty</h2>
             <div class="empty-box">
                 <p>empty.</p>
             </div>
-        </div> -->
-    </section>
+        </div> 
+    </section>-->
 
-
+<!--
     <section class = "inventory-class">
         <div class="inventory-section">
             <h2>Inventory Management</h2>
@@ -188,7 +189,81 @@
                     <button class="cancel-btn" id="cancelEdit">Cancle</button>
                 </div>
             </div>
+    </section>   -->
+
+
+    <section class="inventory-class">
+        <div class="inventory-section">
+            <h2>Inventory Management</h2>
+            <table class="inventory-table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Stock Level</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="edit-flower-section">
+            <h2>Add New Product</h2>
+            <button id="addProductBtn">Add Product</button>
+        
+            <form id="addFlowerForm" style="display: none;">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required><br><br>
+        
+                <label for="price">Price:</label>
+                <input type="number" id="price" name="price" step="0.01" required><br><br>
+        
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" required></textarea><br><br>
+                
+                <label for="category">Category:</label>
+                <input type="text" id="category" name="category" required><br><br>
+        
+                <label for="color">Color:</label>
+                <input type="text" id="color" name="color" required><br><br>
+        
+                <label for="imageUrl">Image URL:</label>
+                <input type="text" id="imageUrl" name="imageUrl" required><br><br>
+        
+                <button type="submit">Add Product</button>
+            </form>
+        </div>
     </section>
+
+    <div id="editFlowerModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h2>Edit Flower</h2>
+            <form id="editFlowerForm" onsubmit="updateFlower(event)">
+                <input type="hidden" id="editFlowerId" name="id">
+                
+                <label for="editName">Name:</label>
+                <input type="text" id="editName" name="name" required><br><br>
+        
+                <label for="editPrice">Price:</label>
+                <input type="number" id="editPrice" name="price" step="0.01" required><br><br>
+        
+                <label for="editDescription">Description:</label>
+                <textarea id="editDescription" name="description" required></textarea><br><br>
+                
+                <label for="editCategory">Category:</label>
+                <input type="text" id="editCategory" name="category" required><br><br>
+        
+                <label for="editColor">Color:</label>
+                <input type="text" id="editColor" name="color" required><br><br>
+        
+                <label for="editImageUrl">Image URL:</label>
+                <input type="text" id="editImageUrl" name="imageUrl" required><br><br>
+        
+                <button type="submit">Update Flower</button>
+            </form>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!--

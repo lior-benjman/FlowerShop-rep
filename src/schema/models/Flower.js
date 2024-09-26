@@ -6,7 +6,7 @@ const flowerSchema = new mongoose.Schema({
   description: String,
   category: { type: String, required: true },
   color: { type: String, required: true},
-  inStock: { type: Boolean, default: true },
+  stock: { type: Number, default: true },
   imageUrl: { type: String, required: true },
 });
 
