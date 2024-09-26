@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../styles/styles_M.css">
     <link rel="stylesheet" href="../styles/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../scripts/flowersDashboard.js" defer></script>
+    <script src="../scripts/managerDashboard.js" defer></script>
 
 </head>
 <body>
@@ -190,6 +190,20 @@
                 </div>
             </div>
     </section>   -->
+
+    <section class="order-management">
+        <h2>Order Management</h2>
+        <div id="orderGroups"></div>
+    </section>
+
+
+    <div id="orderDetailsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeOrderDetailsModal()">&times;</span>
+            <h2>Order Details</h2>
+            <div id="orderDetailsContent"></div>
+        </div>
+    </div>
 
 
     <section class="inventory-class">

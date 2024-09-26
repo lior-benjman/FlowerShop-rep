@@ -1,5 +1,6 @@
 import Order from "../schema/models/Order.js";
 import User from "../schema/models/User.js";
+import Flower from "../schema/models/Flower.js";
 
 export const orderController = {
   create: async (req, res) => {
@@ -13,7 +14,10 @@ export const orderController = {
   },
   getAll: async (req, res) => {
     try {
-      const orders = await Order.find().populate('user').populate('items.flower');
+      const orders = await Order.find()
+        .populate('user', 'username')
+        .populate('items.flower', 'name')
+        .sort({ orderDate: -1 });
       res.json(orders);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -21,7 +25,9 @@ export const orderController = {
   },
   getById: async (req, res) => {
     try {
-      const order = await Order.findById(req.params.id).populate('user').populate('items.flower');
+      const order = await Order.findById(req.params.id)
+        .populate('user', 'username')
+        .populate('items.flower', 'name');
       if (!order) return res.status(404).json({ message: "Order not found" });
       res.json(order);
     } catch (error) {
@@ -69,12 +75,12 @@ export const orderController = {
           throw new Error(`Flower with id ${item.flower._id} not found`);
         }
 
-        if (flower.stockQuantity < item.quantity) {
+        if (flower.stock < item.quantity) {
           throw new Error(`Not enough stock for ${flower.name}`);
         }
 
         // Update stock
-        flower.stockQuantity -= item.quantity;
+        flower.stock -= item.quantity;
         await flower.save({ session });
 
         orderItems.push({
@@ -111,14 +117,15 @@ export const orderController = {
 
   updateOrderStatus: async (req, res) => {
     try {
-      const { orderId, status } = req.body;
-      const order = await Order.findById(orderId);
-      if (!order) return res.status(404).json({ message: "Order not found" });
-
-      order.status = status;
-      await order.save();
-
-      res.json(order);
+      const { id } = req.params;
+      const { status } = req.body;
+      const updatedOrder = await Order.findByIdAndUpdate(
+        id,
+        { status },
+        { new: true }
+      );
+      if (!updatedOrder) return res.status(404).json({ message: "Order not found" });
+      res.json(updatedOrder);
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
@@ -151,25 +158,31 @@ export const orderController = {
       res.status(500).json({ message: error.message });
     }
   },
+
   cancelOrder: async (req, res) => {
     try {
-      const order = await Order.findById(req.params.orderId);
+      console.log("Reached");
+      const { id } = req.params;
+      const order = await Order.findById(id).populate('items.flower');
       if (!order) return res.status(404).json({ message: "Order not found" });
-      if (order.status !== 'Pending') return res.status(400).json({ message: "Order cannot be cancelled" });
-
+      if (order.status !== 'Pending') return res.status(400).json({ message: "Can only cancel pending orders" });
+  
       order.status = 'Cancelled';
       await order.save();
-
+  
       // Restore inventory
+      console.log(order.items);
       for (let item of order.items) {
-        await Flower.findByIdAndUpdate(item.flower, { $inc: { stockQuantity: item.quantity } });
+        await Flower.findByIdAndUpdate(item.flower._id, { $inc: { stock: item.quantity } });
       }
-
-      res.json({ message: "Order cancelled successfully" });
+  
+      res.json(order);
     } catch (error) {
+      console.error("Error cancelling order:", error);
       res.status(400).json({ message: error.message });
     }
   },
+
   getOrderDetails: async (req, res) => {
     try {
       const order = await Order.findById(req.params.orderId)
