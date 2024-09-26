@@ -5,10 +5,35 @@ document.addEventListener('DOMContentLoaded', function() {
     loadOrders();
     
     document.getElementById('addProductBtn').addEventListener('click', showAddProductForm);
+    document.getElementById('cancelAddProduct').addEventListener('click', toggleAddProductForm);
     document.getElementById('addFlowerForm').addEventListener('submit', addNewProduct);
+
+    document.getElementById('inventoryViewBtn').addEventListener('click', () => toggleView('inventoryView'));
+    document.getElementById('ordersViewBtn').addEventListener('click', () => toggleView('ordersView'));
+    document.getElementById('statsViewBtn').addEventListener('click', () => toggleView('statsView'));
+
 });
 
 const token = localStorage.getItem('token');
+
+function toggleView(viewId) {
+    const views = document.querySelectorAll('.dashboard-view');
+    views.forEach(view => view.style.display = 'none');
+
+    const buttons = document.querySelectorAll('.view-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+
+    document.getElementById(viewId).style.display = 'block';
+    document.querySelector(`button[id="${viewId}Btn"]`).classList.add('active');
+
+    // Load data for the selected view if necessary
+    if (viewId === 'ordersView') {
+        loadOrders();
+    } else if (viewId === 'inventoryView') {
+        loadInventory();
+    }
+    // Add similar logic for statsView when implemented
+}
 
 async function loadOrders() {
     try {
@@ -216,12 +241,12 @@ function displayInventory(flowers) {
     flowers.forEach(flower => {
         const row = `
             <tr>
-                <td>${flower.name}</td>
-                <td>
+                <td data-label="Product">${flower.name}</td>
+                <td data-label="Stock Level">
                     <input type="number" value="${flower.stock || 0}" min="0" 
                            onchange="updateStock('${flower._id}', this.value)">
                 </td>
-                <td>
+                <td data-label="Actions">
                     <button onclick="openEditFlower('${flower._id}')">Edit</button>
                 </td>
             </tr>
@@ -298,6 +323,20 @@ async function updateFlower(event) {
     } catch (error) {
         console.error('Error updating flower:', error);
         alert('Failed to update flower. Please try again.');
+    }
+}
+
+function toggleAddProductForm() {
+    const form = document.getElementById('addFlowerForm');
+    const addBtn = document.getElementById('addProductBtn');
+    if (form.style.display === 'none' || form.style.display === '') {
+        form.style.display = 'block';
+        addBtn.textContent = 'Cancel';
+    } else {
+        form.style.display = 'none';
+        addBtn.textContent = 'Add Product';
+        // Reset form fields
+        form.reset();
     }
 }
 
