@@ -3,6 +3,7 @@ import Flower from "../schema/models/Flower.js";
 export const flowerController = {
   create: async (req, res) => {
     try {
+      console.log("reached");
       const newFlower = new Flower(req.body);
       await newFlower.save();
       res.status(201).json(newFlower);
@@ -139,17 +140,20 @@ export const flowerController = {
 
   updateStock: async (req, res) => {
     try {
-      const { flowerId, quantity } = req.body;
-      const flower = await Flower.findByIdAndUpdate(
-        flowerId,
-        { $inc: { stockQuantity: quantity } },
+      const { id } = req.params;
+      const { stock } = req.body;
+      const updatedFlower = await Flower.findByIdAndUpdate(
+        id,
+        { stock },
         { new: true }
       );
-      res.json(flower);
+      if (!updatedFlower) return res.status(404).json({ message: "Flower not found" });
+      res.json(updatedFlower);
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
   },
+
   //Featured Flowers
   getTopSellingFlowers: async (req, res) => {
     try {

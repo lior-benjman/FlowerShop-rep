@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard</title>
+    <link rel="stylesheet" href="../styles/stylesAdmin.css">
+    <link rel="stylesheet" href="../styles/styles.css">
+
+
+
+</head>
+<body>
+    <header>
+       
+        <div class="banner">
+            <nav>
+                <div class="logo">C</div>
+                <ul>
+                    <li><a href="../views/index.html">Home</a></li>
+                    <li><a href="#">Dashboard</a></li>
+                    <li><a href="#">Reports</a></li>
+                    <li><a href="#">Settings</a></li>
+                </ul>
+                <div class="user-actions"></div>
+            </nav>
+
+            <div class="banner-content">
+                <h1>Manager Dashboard</h1>
+                <h2>Track your sales, manage inventory, and view recent orders.</h2>
+            </div>
+        </div>
+
+    </header>
+    
+
+    <!--
+    <section class="graph-list">
+        <div class="graph-item">
+            <h3>Expenses</h3>
+            <canvas id="expensesChart"></canvas>
+        </div>
+        <div class="graph-item">
+            <h3>Income</h3>
+            <canvas id="incomeChart"></canvas>
+        </div>
+        <div class="graph-item">
+            <h3>Sales Statistics</h3>
+            <canvas id="salesChart"></canvas>
+        </div>
+    </section>
+-->
+
+<!--
+    <section class = "sellers-list">
+        <div class="sellers-section">
+            <h2>Best Sellers</h2>
+            <ul class="best-sellers-list">
+                <li>Roses #12345 - larg bouquet</li>
+                <li>Mix flowers #12346 - xlarg bouquet</li>
+                <li>Orchids #12347 - tiny bouquet</li>
+            </ul>
+        </div>
+        <div class="recently-added">
+            <h2>Recently Added</h2>
+            <ul class="added-list">
+                <li>Purple chrysanthemums - Israel</li>
+                <li>Sunflowers - North America</li>
+            </ul>
+        </div>
+        < <div class="empty">
+            <h2>empty</h2>
+            <div class="empty-box">
+                <p>empty.</p>
+            </div>
+        </div> 
+    </section>-->
+
+
+    <div class="dashboard-container">
+        <div class="view-toggle">
+            <button id="inventoryViewBtn" class="view-btn active">Inventory Management</button>
+            <button id="ordersViewBtn" class="view-btn">Order Management</button>
+            <button id="statsViewBtn" class="view-btn">Statistics</button>
+        </div>
+
+        <div id="ordersView" class="dashboard-view" style="display: none;">
+            <section class="order-management">
+                <h2>Order Management</h2>
+                <div id="orderGroups"></div>
+            </section>
+
+
+            <div id="orderDetailsModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeOrderDetailsModal()">&times;</span>
+                    <h2>Order Details</h2>
+                    <div id="orderDetailsContent"></div>
+                </div>
+            </div>
+        
+        </div>
+
+        <div id="inventoryView" class="dashboard-view">
+            <section class="inventory-class">
+                <div class="inventory-section">
+                    <h2>Inventory Management</h2>
+                    <table class="inventory-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Stock Level</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="edit-flower-section">
+                    <div class="add-new-product">
+                        <h2>Add New Product</h2>
+                        <button id="addProductBtn">Add Product</button>
+                    
+                        <form id="addFlowerForm" style="display: none;">
+                            <label for="name">Name:</label>
+                            <input type="text" id="name" name="name" required><br><br>
+                    
+                            <label for="price">Price:</label>
+                            <input type="number" id="price" name="price" step="0.01" required><br><br>
+                    
+                            <label for="description">Description:</label>
+                            <textarea id="description" name="description" required></textarea><br><br>
+                            
+                            <label for="category">Category:</label>
+                            <input type="text" id="category" name="category" required><br><br>
+                    
+                            <label for="color">Color:</label>
+                            <input type="text" id="color" name="color" required><br><br>
+                    
+                            <label for="imageUrl">Image URL:</label>
+                            <input type="text" id="imageUrl" name="imageUrl" required><br><br>
+                    
+                            <div class="form-buttons">
+                                <button type="submit">Add Product</button>
+                                <button type="button" id="cancelAddProduct">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <div id="editFlowerModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeEditModal()">&times;</span>
+                    <h2>Edit Flower</h2>
+                    <form id="editFlowerForm" onsubmit="updateFlower(event)">
+                        <input type="hidden" id="editFlowerId" name="id">
+                        
+                        <label for="editName">Name:</label>
+                        <input type="text" id="editName" name="name" required><br><br>
+                
+                        <label for="editPrice">Price:</label>
+                        <input type="number" id="editPrice" name="price" step="0.01" required><br><br>
+                
+                        <label for="editDescription">Description:</label>
+                        <textarea id="editDescription" name="description" required></textarea><br><br>
+                        
+                        <label for="editCategory">Category:</label>
+                        <input type="text" id="editCategory" name="category" required><br><br>
+                
+                        <label for="editColor">Color:</label>
+                        <input type="text" id="editColor" name="color" required><br><br>
+                
+                        <label for="editImageUrl">Image URL:</label>
+                        <input type="text" id="editImageUrl" name="imageUrl" required><br><br>
+                
+                        <button type="submit">Update Flower</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="statsView" class="dashboard-view" style="display: none;">
+            <section class="statistics">
+                <h2>Statistics</h2>
+                <div class="chart-container">
+                    <div class="chart-item">
+                        <h3>Orders and Revenue by Month</h3>
+                        <canvas id="ordersRevenueChart"></canvas>
+                    </div>
+                    <div class="chart-item">
+                        <h3>Revenue by Item</h3>
+                        <canvas id="revenueByItemChart"></canvas>
+                    </div>
+                    <div class="chart-item">
+                        <h3>Top Selling Flowers</h3>
+                        <canvas id="topSellingFlowersChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+
+    <script src="../scripts/header.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../scripts/managerDashboard.js" defer></script>
+</body>
+
+</html>
