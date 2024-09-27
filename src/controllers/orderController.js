@@ -193,5 +193,114 @@ export const orderController = {
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
+  },
+
+  //statistics
+  getOrdersRevenueStats: async (req, res) => {
+    try {
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+        const stats = await Order.aggregate([
+            { $match: { status: { $ne: 'Cancelled' }, orderDate: { $gte: sixMonthsAgo } } },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y-%m", date: "$orderDate" } },
+                    orderCount: { $sum: 1 },
+                    totalRevenue: { $sum: "$totalAmount" }
+                }
+            },
+            { $sort: { _id: 1 } }
+        ]);
+
+        const labels = stats.map(item => item._id);
+        const orders = stats.map(item => item.orderCount);
+        const revenue = stats.map(item => item.totalRevenue);
+
+        res.json({ labels, orders, revenue });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+  },
+
+  getRevenueByItemStats: async (req, res) => {
+    try {
+        const stats = await Order.aggregate([
+            { $match: { status: { $ne: 'Cancelled' } } },
+            { $unwind: "$items" },
+            {
+                $lookup: {
+                    from: "flowers",
+                    localField: "items.flower",
+                    foreignField: "_id",
+                    as: "flowerDetails"
+                }
+            },
+            { $unwind: "$flowerDetails" },
+            {
+                $group: {
+                    _id: "$items.flower",
+                    name: { $first: "$flowerDetails.name" },
+                    totalRevenue: { $sum: { $multiply: ["$items.quantity", "$flowerDetails.price"] } }
+                }
+            },
+            { $sort: { totalRevenue: -1 } },
+            { $limit: 10 },
+            {
+                $project: {
+                    _id: 0,
+                    name: 1,
+                    totalRevenue: 1
+                }
+            }
+        ]);
+
+        const labels = stats.map(item => item.name);
+        const revenue = stats.map(item => item.totalRevenue);
+
+        res.json({ labels, revenue });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+  },
+
+  getTopSellingFlowers: async (req, res) => {
+    try {
+        const stats = await Order.aggregate([
+            { $match: { status: { $ne: 'Cancelled' } } },
+            { $unwind: "$items" },
+            {
+                $group: {
+                    _id: "$items.flower",
+                    totalQuantity: { $sum: "$items.quantity" }
+                }
+            },
+            { $sort: { totalQuantity: -1 } },
+            { $limit: 5 },
+            {
+                $lookup: {
+                    from: "flowers",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "flowerDetails"
+                }
+            },
+            { $unwind: "$flowerDetails" },
+            {
+                $project: {
+                    _id: 0,
+                    name: "$flowerDetails.name",
+                    totalQuantity: 1
+                }
+            }
+        ]);
+
+        const labels = stats.map(item => item.name);
+        const quantities = stats.map(item => item.totalQuantity);
+
+        res.json({ labels, quantities });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
   }
 };

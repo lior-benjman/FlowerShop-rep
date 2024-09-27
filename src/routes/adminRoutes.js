@@ -24,6 +24,10 @@ adminRouter.post('/add-flower', flowerController.create);
 adminRouter.put('/:id/stock', flowerController.updateStock);
 adminRouter.put('/:id', flowerController.update);
 
+// Statistics routes
+adminRouter.get('/statistics/orders-revenue', orderController.getOrdersRevenueStats);
+adminRouter.get('/statistics/revenue-by-item', orderController.getRevenueByItemStats);
+adminRouter.get('/statistics/top-selling-flowers', orderController.getTopSellingFlowers);
 
 
 

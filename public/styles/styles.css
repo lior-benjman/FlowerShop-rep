@@ -1,20 +1,20 @@
 @font-face {
     font-family: 'Avenir';
-    src: url('../fonts/Avenir/Avenir.woff2') format('woff2'),
+    src: url('../fonts/Avenir/Avenir.woff2.ttc') format('woff2'),
          url('../fonts/Avenir/Avenir.ttc') format('ttc');
     font-weight: normal;
     font-style: normal;
 }
 @font-face {
     font-family: 'Avenir Next';
-    src: url('../fonts/Avenir/Avenir Next.woff2') format('woff2'),
-         url('../../fonts/Avenir/Avenir Next.ttc') format('ttc');
+    src: url('../fonts/Avenir/Avenir\ Next.woff2.ttc') format('woff2'),
+         url('../fonts/Avenir/Avenir Next.ttc') format('ttc');
     font-weight: normal;
     font-style: normal;
 }
 @font-face {
     font-family: 'Avenir Next Ultra Light';
-    src: url('../fonts/Avenir/Avenir Next.woff2') format('woff2'),
+    src: url('../fonts/Avenir/Avenir\ Next.woff2.ttc') format('woff2'),
         url('../fonts/Avenir/Avenir Next.ttc') format('ttc');
     font-style: normal;
 }
@@ -28,7 +28,7 @@
 }
 @font-face {
     font-family: 'Caudex';
-    src: url('../fonts/Caudex/Caudex-Regular.woff2') format('woff2'),
+    src: url('../fonts/Caudex/Caudex-Regular.woff2.ttf') format('woff2'),
          url('../fonts/Caudex/Caudex-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;

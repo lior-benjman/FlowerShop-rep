@@ -3,6 +3,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     loadInventory();
     loadOrders();
+    loadStatistics();
     
     document.getElementById('addProductBtn').addEventListener('click', showAddProductForm);
     document.getElementById('cancelAddProduct').addEventListener('click', toggleAddProductForm);
@@ -26,13 +27,145 @@ function toggleView(viewId) {
     document.getElementById(viewId).style.display = 'block';
     document.querySelector(`button[id="${viewId}Btn"]`).classList.add('active');
 
-    // Load data for the selected view if necessary
     if (viewId === 'ordersView') {
         loadOrders();
     } else if (viewId === 'inventoryView') {
         loadInventory();
+    } else if (viewId === 'statsView') {
+        loadStatistics();
     }
-    // Add similar logic for statsView when implemented
+
+}
+
+async function loadStatistics() {
+    try {
+        const [ordersRevenueData, revenueByItemData, topSellingFlowersData] = await Promise.all([
+            fetch('/api/admin/statistics/orders-revenue', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            }).then(res => res.json()),
+            fetch('/api/admin/statistics/revenue-by-item', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            }).then(res => res.json()),
+            fetch('/api/admin/statistics/top-selling-flowers', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                }
+            }).then(res => res.json())
+        ]);
+
+        createOrdersRevenueChart(ordersRevenueData);
+        createRevenueByItemChart(revenueByItemData);
+        createTopSellingFlowersChart(topSellingFlowersData);
+    } catch (error) {
+        console.error('Error loading statistics:', error);
+    }
+}
+
+function createOrdersRevenueChart(data) {
+    const ctx = document.getElementById('ordersRevenueChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.labels,
+            datasets: [
+                {
+                    label: 'Orders',
+                    data: data.orders,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    yAxisID: 'y-axis-orders',
+                },
+                {
+                    label: 'Revenue',
+                    data: data.revenue,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    yAxisID: 'y-axis-revenue',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                'y-axis-orders': {
+                    type: 'linear',
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Number of Orders'
+                    }
+                },
+                'y-axis-revenue': {
+                    type: 'linear',
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Revenue ($)'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createRevenueByItemChart(data) {
+    const ctx = document.getElementById('revenueByItemChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.labels,
+            datasets: [{
+                label: 'Revenue',
+                data: data.revenue,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Revenue ($)'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function createTopSellingFlowersChart(data) {
+    const ctx = document.getElementById('topSellingFlowersChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: data.labels,
+            datasets: [{
+                data: data.quantities,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(153, 102, 255, 0.6)'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'right',
+                }
+            }
+        }
+    });
 }
 
 async function loadOrders() {
