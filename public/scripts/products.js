@@ -16,6 +16,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let isIndexPage = window.location.pathname.includes('index.html');
     let isViewingAll = false;
 
+    const user = JSON.parse(localStorage.getItem('user'));
+    const token = localStorage.getItem('token');
+
 
     async function fetchProducts(pageNum, pageLimit, filters = {}, viewAll = false) {
         try {
@@ -133,18 +136,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function addToCart(productId) {
-        const user = JSON.parse(localStorage.getItem('user'));
         if (!user) {
             alert('Please log in to add items to your cart.');
             return;
         }
 
         try {
-            const response = await fetch('/api/auth/cart/add', {
+            const response = await fetch('/api/users/cart/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     userId: user.id,
@@ -162,6 +164,38 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('Error adding to cart:', error);
             alert('Failed to add product to cart. Please try again.');
+        }
+    }
+
+    async function updateCartCount() {
+        if (!user) {
+            console.log('User not logged in');
+            return;
+        }
+    
+        try {
+            const response = await fetch(`/api/users/cart/${user.id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to fetch cart data');
+            }
+    
+            const cartData = await response.json();
+            const cartCount = cartData.items.reduce((total, item) => total + item.quantity, 0);
+    
+            const cartCountElement = document.getElementById('cart-count');
+            if (cartCountElement) {
+                cartCountElement.textContent = `Cart (${cartCount})`;
+                cartCountElement.style.display = cartCount > 0 ? 'inline' : 'none';
+            }
+        
+        } catch (error) {
+            console.error('Error updating cart count:', error);
         }
     }
 

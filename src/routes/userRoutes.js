@@ -1,7 +1,10 @@
 import express from 'express';
 import { userController } from '../controllers/userController.js';
+import { verifyToken } from '../middleware/auth.js';
 
 const userRouter = express.Router();
+
+userRouter.use(verifyToken);
 
 userRouter.post('/', userController.create);
 userRouter.get('/', userController.getAll);

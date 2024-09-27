@@ -1,4 +1,5 @@
 import User from "../schema/models/User.js";
+import Flower from "../schema/models/Flower.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -104,28 +105,49 @@ export const userController = {
   addToCart: async (req, res) => {
     try {
       const { userId, flowerId, quantity } = req.body;
+    
+      if (!Number.isInteger(quantity) || quantity < 1) {
+        return res.status(400).json({ message: "Quantity must be a positive integer" });
+      }
+  
       const user = await User.findById(userId);
       if (!user) return res.status(404).json({ message: "User not found" });
-
+  
       const flower = await Flower.findById(flowerId);
       if (!flower) return res.status(404).json({ message: "Flower not found" });
-
-      const cartItemIndex = user.cart.items.findIndex(item => item.flower.toString() === flowerId);
+  
+      if (!user.cart) {
+        user.cart = { items: [], totalAmount: 0 };
+      }
+  
+      const cartItemIndex = user.cart.items.findIndex(item => item.flower.equals(flowerId));
       
       if (cartItemIndex > -1) {
         user.cart.items[cartItemIndex].quantity += quantity;
       } else {
         user.cart.items.push({ flower: flowerId, quantity });
       }
-
+  
+      // Recalculate total amount
+      const flowerIds = user.cart.items.map(item => item.flower);
+      const flowers = await Flower.find({ _id: { $in: flowerIds } });
+  
       user.cart.totalAmount = user.cart.items.reduce((total, item) => {
-        return total + (item.quantity * flower.price);
+        const flowerInCart = flowers.find(f => f._id.equals(item.flower));
+        return total + (item.quantity * flowerInCart.price);
       }, 0);
-
+  
+      // Round to two decimal places to avoid floating point issues
+      user.cart.totalAmount = Math.round(user.cart.totalAmount * 100) / 100;
+  
       await user.save();
       res.json(user.cart);
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      if (error.name === 'ValidationError') {
+        return res.status(400).json({ message: "Invalid input data" });
+      }
+      console.error('Add to cart error:', error);
+      res.status(500).json({ message: "Internal server error" });
     }
   },
 
