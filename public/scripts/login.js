@@ -18,12 +18,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 const data = await response.json();
-
                 if (response.ok) {
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
-                    alert('Login successful!');
-                    window.location.href = 'shop.html';
+                    if (data.user.isAdmin) {
+                        window.location.href = 'indexAdmin.html';
+                    } else {
+                        window.location.href = 'shop.html';
+                    }
                 } else {
                     alert(data.message || 'Login failed!');
                 }

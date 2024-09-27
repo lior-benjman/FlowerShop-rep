@@ -67,7 +67,7 @@ export const userController = {
         { expiresIn: '1h' }
       );
 
-      res.json({ token, user: { id: user._id, username: user.username } });
+      res.json({ token, user: { id: user._id, username: user.username, isAdmin: user.isAdmin}});
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
