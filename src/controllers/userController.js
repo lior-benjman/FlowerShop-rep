@@ -76,7 +76,7 @@ export const userController = {
 
   signup: async (req, res) => {
     try {
-      const { username, email, password } = req.body;
+      const { username,firstName, lastName, email, password } = req.body;
 
       const existingUser = await User.findOne({ $or: [{ username }, { email }] });
       if (existingUser) {
@@ -88,6 +88,8 @@ export const userController = {
 
       const newUser = new User({
         username,
+        firstName,
+        lastName,
         email,
         password: hashedPassword
       });

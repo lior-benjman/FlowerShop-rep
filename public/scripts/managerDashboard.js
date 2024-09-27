@@ -22,7 +22,7 @@ const token = localStorage.getItem('token');
 async function checkAndRouteUser() {
     const isAdmin = await verifyAdmin();
     if (!isAdmin) {
-        location.href = '404.html';
+        window.location.href = 'index.html';
     }
 }
 
