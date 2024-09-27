@@ -1,6 +1,7 @@
 // manager-dashboard.js
 
 document.addEventListener('DOMContentLoaded', function() {
+    checkAndRouteUser();
     loadInventory();
     loadOrders();
     loadStatistics();
@@ -16,6 +17,43 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 const token = localStorage.getItem('token');
+
+//verify admin
+async function checkAndRouteUser() {
+    const isAdmin = await verifyAdmin();
+    if (!isAdmin) {
+        location.href = '404.html';
+    }
+}
+
+async function verifyAdmin(){
+    try {
+        const response = await fetch('/api/admin/check', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                console.error('Unauthorized: Token may be invalid or expired');
+            } else {
+                console.error('Error checking admin status:', response.statusText);
+            }
+            return false;
+        }
+
+        const data = await response.json();
+        return data.isAdmin === true;
+    } catch (error) {
+        console.error('Error verifying admin:', error);
+        return false;
+    }
+}
+
+//navigation
 
 function toggleView(viewId) {
     const views = document.querySelectorAll('.dashboard-view');
@@ -36,6 +74,8 @@ function toggleView(viewId) {
     }
 
 }
+
+//statistics
 
 async function loadStatistics() {
     try {
@@ -167,6 +207,8 @@ function createTopSellingFlowersChart(data) {
         }
     });
 }
+
+//orders
 
 async function loadOrders() {
     try {
@@ -352,6 +394,8 @@ async function cancelOrder(orderId) {
     }
 }
 
+//inventory
+
 async function loadInventory() {
     try {
         const response = await fetch('/api/flowers');
@@ -359,9 +403,6 @@ async function loadInventory() {
         const flowers = flowersData.flowers;
         console.log(flowers);
         displayInventory(flowers);
-        const response2 = await fetch('/api/users');
-        const flowersData2 = await response2.json();
-        console.log(flowersData2);
     } catch (error) {
         console.error('Error loading inventory:', error);
     }
@@ -468,7 +509,6 @@ function toggleAddProductForm() {
     } else {
         form.style.display = 'none';
         addBtn.textContent = 'Add Product';
-        // Reset form fields
         form.reset();
     }
 }
@@ -509,10 +549,4 @@ async function addNewProduct(event) {
         console.error('Error adding product:', error);
         alert('Failed to add product. Please try again.');
     }
-}
-
-function reorderProduct(flowerId) {
-
-    console.log('Reorder product:', flowerId);
-
 }
