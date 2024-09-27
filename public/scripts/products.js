@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const productGrid = document.querySelector('.product-grid');
-    const loadMoreButton = document.querySelector('.load-more button');
-    const viewAllButton = document.querySelector('.view-all button');
+    const loadMoreButton = document.querySelector('.load-more');
+    const viewAllButton = document.querySelector('.view-all');
 
     const searchInput = document.getElementById('search-input');
     const sortSelect = document.getElementById('sort-select');

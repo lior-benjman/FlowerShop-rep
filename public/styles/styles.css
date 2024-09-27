@@ -357,11 +357,15 @@ header .banner .banner-content h3 {
     color: #666;
 }
 
-.abcd{
+.load-products{
     text-align: center;
 }
 
-.load-more button{  
+.button-container {
+    display: inline-block;
+}
+
+.load-more{  
     font-family: 'AvenirNext-UltraLight', sans-serif;
     font-size: 16px;
     padding-left: 37px;
@@ -376,11 +380,11 @@ header .banner .banner-content h3 {
     border-width: thin;  
 }
 
-.load-more button:hover {
+.load-more:hover {
     background-color: rgba(85, 59, 106, 0.621);    
 }
   
-.view-all button{   
+.view-all{   
     font-family: 'AvenirNext-UltraLight', sans-serif;
     font-size: medium;
     background-color: #fdf6f0;
@@ -395,7 +399,7 @@ header .banner .banner-content h3 {
     cursor: pointer;
 }
 
-.view-all button:hover {
+.view-all:hover {
     background-color: rgba(85, 59, 106, 0.621);   
 }
 
