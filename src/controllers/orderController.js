@@ -53,67 +53,64 @@ export const orderController = {
     }
   },
 
-  createFromCart: async (req, res) => {
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
-    try {
-      const { userId, shippingAddress } = req.body;
+createFromCart: async (req, res) => {
+  try {
+      const { userId } = req.params;
+      const { shippingAddress } = req.body;
       const user = await User.findById(userId).populate('cart.items.flower');
       if (!user) {
-        throw new Error("User not found");
+          return res.status(404).json({ message: "User not found" });
       }
 
-      if (!user.cart || user.cart.length === 0 || user.cart[0].items.length === 0) {
-        throw new Error("Cart is empty");
+      if (!user.cart || user.cart.items.length === 0) {
+          return res.status(400).json({ message: "Cart is empty" });
       }
 
       const orderItems = [];
-      for (const item of user.cart[0].items) {
-        const flower = await Flower.findById(item.flower._id).session(session);
-        if (!flower) {
-          throw new Error(`Flower with id ${item.flower._id} not found`);
-        }
+      let totalAmount = 0;
+      
+      for (const item of user.cart.items) {
+          const flower = await Flower.findById(item.flower._id);
+          if (!flower) {
+              return res.status(404).json({ message: `Flower with id ${item.flower._id} not found` });
+          }
 
-        if (flower.stock < item.quantity) {
-          throw new Error(`Not enough stock for ${flower.name}`);
-        }
+          if (flower.stock < item.quantity) {
+              return res.status(400).json({ message: `Not enough stock for ${flower.name}` });
+          }
 
-        // Update stock
-        flower.stock -= item.quantity;
-        await flower.save({ session });
+          flower.stock -= item.quantity;
+          await flower.save();
 
-        orderItems.push({
-          flower: flower._id,
-          quantity: item.quantity,
-          price: flower.price
-        });
+          const itemTotal = flower.price * item.quantity;
+          totalAmount += itemTotal;
+
+          orderItems.push({
+              flower: flower._id,
+              quantity: item.quantity
+          });
       }
 
       const newOrder = new Order({
-        user: userId,
-        items: orderItems,
-        totalAmount: user.cart[0].totalAmount,
-        shippingAddress,
-        status: 'Pending'
+          user: userId,
+          items: orderItems,
+          totalAmount: totalAmount,
+          shippingAddress: shippingAddress,
+          status: 'Pending'
       });
 
-      await newOrder.save({ session });
+      await newOrder.save();
 
-      // Clear user's cart
-      user.cart = [{ items: [], totalAmount: 0 }];
-      await user.save({ session });
-
-      await session.commitTransaction();
-      session.endSession();
+      user.cart = { items: [], totalAmount: 0 };
+      await user.save();
 
       res.status(201).json(newOrder);
-    } catch (error) {
-      await session.abortTransaction();
-      session.endSession();
-      res.status(400).json({ message: error.message });
-    }
-  },
+  } catch (error) {
+      console.error('Error creating order:', error);
+      res.status(500).json({ message: "An error occurred while creating the order" });
+  }
+},
+
 
   updateOrderStatus: async (req, res) => {
     try {

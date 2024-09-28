@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const userActionsDiv = document.querySelector('.user-actions');
     const user = JSON.parse(localStorage.getItem('user'));
+    const token = localStorage.getItem('token');
 
     function createButton(text, className, onClick) {
         const button = document.createElement('button');
@@ -48,7 +49,12 @@ document.addEventListener('DOMContentLoaded', function() {
     async function getCartItemCount() {
         if (!user) return 0;
         try {
-            const response = await fetch(`/api/users/cart/${user.id}`);
+            const response = await fetch(`/api/users/cart/${user.id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
             const data = await response.json();
             return data.itemCount || 0;
         } catch (error) {
@@ -58,9 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function checkTokenValidity() {
-        const token = localStorage.getItem('token');
         if (!token) return false;
-
         try {
             const response = await fetch('/api/auth/check-token', {
                 headers: {
@@ -94,11 +98,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const cartLink = document.createElement('a');
         cartLink.href = "cart.html";
         cartLink.textContent = `Cart (${itemCount})`;
+        cartLink.id = 'cart-count';
         userActionsDiv.appendChild(cartLink);
     }
 
     async function checkAdminStatus() {
-        const token = localStorage.getItem('token');
         if (!token) return false;
 
         try {

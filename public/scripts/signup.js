@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
 
             const username = document.getElementById('username').value;
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
@@ -20,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ username, email, password }),
+                    body: JSON.stringify({ username, firstName, lastName, email, password }),
                 });
 
                 const data = await response.json();
