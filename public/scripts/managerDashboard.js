@@ -109,103 +109,194 @@ async function loadStatistics() {
 }
 
 function createOrdersRevenueChart(data) {
-    const ctx = document.getElementById('ordersRevenueChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: data.labels,
-            datasets: [
-                {
-                    label: 'Orders',
-                    data: data.orders,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    yAxisID: 'y-axis-orders',
-                },
-                {
-                    label: 'Revenue',
-                    data: data.revenue,
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    yAxisID: 'y-axis-revenue',
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                'y-axis-orders': {
-                    type: 'linear',
-                    position: 'left',
-                    title: {
-                        display: true,
-                        text: 'Number of Orders'
-                    }
-                },
-                'y-axis-revenue': {
-                    type: 'linear',
-                    position: 'right',
-                    title: {
-                        display: true,
-                        text: 'Revenue ($)'
-                    }
-                }
-            }
-        }
-    });
+    d3.select('#ordersRevenueChart').selectAll('*').remove();
+
+    const margin = {top: 20, right: 60, bottom: 30, left: 50};
+    const width = 800 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+
+    const svg = d3.select('#ordersRevenueChart')
+        .append('svg')
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom)
+        .append('g')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scaleBand()
+        .range([0, width])
+        .padding(0.1);
+
+    const y1 = d3.scaleLinear().range([height, 0]);
+    const y2 = d3.scaleLinear().range([height, 0]);
+
+    x.domain(data.labels);
+    y1.domain([0, d3.max(data.orders)]);
+    y2.domain([0, d3.max(data.revenue)]);
+
+    svg.append('g')
+        .attr('transform', `translate(0,${height})`)
+        .call(d3.axisBottom(x));
+
+    svg.append('g').call(d3.axisLeft(y1));
+    svg.append('g')
+        .attr('transform', `translate(${width},0)`)
+        .call(d3.axisRight(y2));
+
+    const line1 = d3.line()
+        .x((d, i) => x(data.labels[i]) + x.bandwidth() / 2)
+        .y(d => y1(d));
+
+    const line2 = d3.line()
+        .x((d, i) => x(data.labels[i]) + x.bandwidth() / 2)
+        .y(d => y2(d));
+
+    svg.append('path')
+        .datum(data.orders)
+        .attr('fill', 'none')
+        .attr('stroke', 'steelblue')
+        .attr('stroke-width', 2)
+        .attr('d', line1);
+
+    svg.append('path')
+        .datum(data.revenue)
+        .attr('fill', 'none')
+        .attr('stroke', 'red')
+        .attr('stroke-width', 2)
+        .attr('d', line2);
+
+    svg.append('text')
+        .attr('x', width - 100)
+        .attr('y', 20)
+        .attr('fill', 'steelblue')
+        .text('Orders');
+
+    svg.append('text')
+        .attr('x', width - 100)
+        .attr('y', 40)
+        .attr('fill', 'red')
+        .text('Revenue');
 }
 
 function createRevenueByItemChart(data) {
-    const ctx = document.getElementById('revenueByItemChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: data.labels,
-            datasets: [{
-                label: 'Revenue',
-                data: data.revenue,
-                backgroundColor: 'rgba(54, 162, 235, 0.6)'
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Revenue ($)'
-                    }
-                }
-            }
-        }
-    });
+    d3.select('#revenueByItemChart').selectAll('*').remove();
+
+    const margin = {top: 20, right: 20, bottom: 100, left: 60};
+    const width = 800 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+
+    const svg = d3.select('#revenueByItemChart')
+        .append('svg')
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom)
+        .append('g')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scaleBand()
+        .range([0, width])
+        .padding(0.1);
+
+    const y = d3.scaleLinear()
+        .range([height, 0]);
+
+    x.domain(data.labels);
+    y.domain([0, d3.max(data.revenue)]);
+
+    svg.append('g')
+        .attr('transform', `translate(0,${height})`)
+        .call(d3.axisBottom(x))
+        .selectAll('text')
+        .attr('transform', 'rotate(-45)')
+        .attr('text-anchor', 'end')
+        .attr('dx', '-.8em')
+        .attr('dy', '.15em')
+        .style('font-size', '12px');
+
+    svg.append('g')
+        .call(d3.axisLeft(y));
+
+    svg.selectAll('.bar')
+        .data(data.revenue)
+        .enter().append('rect')
+        .attr('class', 'bar')
+        .attr('x', (d, i) => x(data.labels[i]))
+        .attr('width', x.bandwidth())
+        .attr('y', d => y(d))
+        .attr('height', d => height - y(d))
+        .attr('fill', 'steelblue');
+
+    svg.selectAll('.label')
+        .data(data.revenue)
+        .enter()
+        .append('text')
+        .attr('class', 'label')
+        .attr('x', (d, i) => x(data.labels[i]) + x.bandwidth() / 2)
+        .attr('y', d => y(d) - 5)
+        .attr('text-anchor', 'middle')
+        .text(d => d.toFixed(2))
+        .style('font-size', '14px');
 }
 
 function createTopSellingFlowersChart(data) {
-    const ctx = document.getElementById('topSellingFlowersChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: data.labels,
-            datasets: [{
-                data: data.quantities,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.6)',
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(255, 206, 86, 0.6)',
-                    'rgba(75, 192, 192, 0.6)',
-                    'rgba(153, 102, 255, 0.6)'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'right',
-                }
-            }
-        }
-    });
+    d3.select('#topSellingFlowersChart').selectAll('*').remove();
+
+    const width = 600;
+    const height = 600;
+    const radius = Math.min(width, height) / 3;
+
+    const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    const svg = d3.select('#topSellingFlowersChart')
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .append('g')
+        .attr('transform', `translate(${width / 2},${height / 2})`);
+
+    const pie = d3.pie()
+        .value(d => d)
+        .sort(null);
+
+    const arc = d3.arc()
+        .innerRadius(0)
+        .outerRadius(radius * 0.6);
+
+    const outerArc = d3.arc()
+        .innerRadius(radius * 0.7)
+        .outerRadius(radius * 0.7);
+
+    const arcs = svg.selectAll('arc')
+        .data(pie(data.quantities))
+        .enter()
+        .append('g');
+
+    arcs.append('path')
+        .attr('d', arc)
+        .attr('fill', (d, i) => color(i));
+
+    arcs.append('polyline')
+        .attr('points', function(d) {
+            const pos = outerArc.centroid(d);
+            pos[0] = radius * 0.8 * (midAngle(d) < Math.PI ? 1 : -1);
+            return [arc.centroid(d), outerArc.centroid(d), pos];
+        })
+        .style('fill', 'none')
+        .style('stroke', 'black');
+
+    arcs.append('text')
+        .attr('dy', '.35em')
+        .attr('transform', function(d) {
+            const pos = outerArc.centroid(d);
+            pos[0] = radius * 0.82 * (midAngle(d) < Math.PI ? 1 : -1);
+            return `translate(${pos})`;
+        })
+        .attr('text-anchor', d => midAngle(d) < Math.PI ? 'start' : 'end')
+        .text((d, i) => `${data.labels[i]} (${d.data})`)
+        .style('font-size', '12px')
+        .style('fill', 'black');  // Ensure text color is visible
+
+    function midAngle(d) {
+        return d.startAngle + (d.endAngle - d.startAngle) / 2;
+    }
 }
 
 //orders
