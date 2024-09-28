@@ -53,63 +53,63 @@ export const orderController = {
     }
   },
 
-createFromCart: async (req, res) => {
-  try {
-      const { userId } = req.params;
-      const { shippingAddress } = req.body;
-      const user = await User.findById(userId).populate('cart.items.flower');
-      if (!user) {
-          return res.status(404).json({ message: "User not found" });
-      }
+  createFromCart: async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { shippingAddress } = req.body;
+        const user = await User.findById(userId).populate('cart.items.flower');
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
 
-      if (!user.cart || user.cart.items.length === 0) {
-          return res.status(400).json({ message: "Cart is empty" });
-      }
+        if (!user.cart || user.cart.items.length === 0) {
+            return res.status(400).json({ message: "Cart is empty" });
+        }
 
-      const orderItems = [];
-      let totalAmount = 0;
-      
-      for (const item of user.cart.items) {
-          const flower = await Flower.findById(item.flower._id);
-          if (!flower) {
-              return res.status(404).json({ message: `Flower with id ${item.flower._id} not found` });
-          }
+        const orderItems = [];
+        let totalAmount = 0;
+        
+        for (const item of user.cart.items) {
+            const flower = await Flower.findById(item.flower._id);
+            if (!flower) {
+                return res.status(404).json({ message: `Flower with id ${item.flower._id} not found` });
+            }
 
-          if (flower.stock < item.quantity) {
-              return res.status(400).json({ message: `Not enough stock for ${flower.name}` });
-          }
+            if (flower.stock < item.quantity) {
+                return res.status(400).json({ message: `Not enough stock for ${flower.name}` });
+            }
 
-          flower.stock -= item.quantity;
-          await flower.save();
+            flower.stock -= item.quantity;
+            await flower.save();
 
-          const itemTotal = flower.price * item.quantity;
-          totalAmount += itemTotal;
+            const itemTotal = flower.price * item.quantity;
+            totalAmount += itemTotal;
 
-          orderItems.push({
-              flower: flower._id,
-              quantity: item.quantity
-          });
-      }
+            orderItems.push({
+                flower: flower._id,
+                quantity: item.quantity
+            });
+        }
 
-      const newOrder = new Order({
-          user: userId,
-          items: orderItems,
-          totalAmount: totalAmount,
-          shippingAddress: shippingAddress,
-          status: 'Pending'
-      });
+        const newOrder = new Order({
+            user: userId,
+            items: orderItems,
+            totalAmount: totalAmount,
+            shippingAddress: shippingAddress,
+            status: 'Pending'
+        });
 
-      await newOrder.save();
+        await newOrder.save();
 
-      user.cart = { items: [], totalAmount: 0 };
-      await user.save();
+        user.cart = { items: [], totalAmount: 0 };
+        await user.save();
 
-      res.status(201).json(newOrder);
-  } catch (error) {
-      console.error('Error creating order:', error);
-      res.status(500).json({ message: "An error occurred while creating the order" });
-  }
-},
+        res.status(201).json(newOrder);
+    } catch (error) {
+        console.error('Error creating order:', error);
+        res.status(500).json({ message: "An error occurred while creating the order" });
+    }
+  },
 
 
   updateOrderStatus: async (req, res) => {
@@ -128,15 +128,20 @@ createFromCart: async (req, res) => {
     }
   },
 
-  getOrdersByStatus: async (req, res) => {
+  getProcessingOrders: async (req, res) => {
     try {
-      const { status } = req.params;
-      const orders = await Order.find({ status }).populate('user').populate('items.flower');
-      res.json(orders);
+      const processingOrders = await Order.find({ status: 'Processing' });
+      const locations = processingOrders.map(order => ({
+        id: order._id,
+        address: order.shippingAddress
+      }));
+      res.json(locations);
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      console.error('Error fetching processing orders:', error);
+      res.status(500).json({ message: 'Error fetching order locations' });
     }
   },
+  
   generateOrderReport: async (req, res) => {
     try {
       const { startDate, endDate } = req.query;

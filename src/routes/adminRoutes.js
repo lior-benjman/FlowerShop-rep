@@ -2,6 +2,9 @@ import express from 'express';
 import { verifyToken, isAdmin } from '../middleware/auth.js';
 import { flowerController } from '../controllers/flowerController.js';
 import { orderController } from '../controllers/orderController.js';
+import { config } from "../config/config.js";
+
+const { mapsApiKey } = config;
 
 
 const adminRouter = express.Router();
@@ -14,10 +17,16 @@ adminRouter.get('/check', (req, res) => {
     res.json({ isAdmin: true });
 });
 
+adminRouter.get('/fetchMapsApi', (req, res) => {
+    res.json({ mapsApiKey });
+});
+
+
 //ordersManagement
 adminRouter.get('/orders', orderController.getAll);
 adminRouter.put('/orders/:id/status', orderController.updateOrderStatus);
 adminRouter.put('/orders/:id/cancel', orderController.cancelOrder);
+adminRouter.get('/status/:status', orderController.getProcessingOrders);
 
 //flowersManagement
 adminRouter.post('/add-flower', flowerController.create);

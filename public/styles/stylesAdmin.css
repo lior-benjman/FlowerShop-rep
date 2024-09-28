@@ -588,7 +588,7 @@ button[onclick^="viewOrderDetails"]:hover {
     background-color: #2980b9;
 }
 
-button[onclick^="updateOrderStatus"] {
+.update-status {
     background-color: #2ecc71;
     color: white;
 }
@@ -791,4 +791,10 @@ button[onclick^="cancelOrder"]:hover {
     background-color: transparent;
     box-shadow: none;
     padding: 0;
+}
+
+.order-map {
+    max-width: 800px;
+    margin: 20px auto;
+    border: 1px solid #ccc;
 }

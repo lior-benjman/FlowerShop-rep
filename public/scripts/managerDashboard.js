@@ -11,10 +11,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('inventoryViewBtn').addEventListener('click', () => toggleView('inventoryView'));
     document.getElementById('ordersViewBtn').addEventListener('click', () => toggleView('ordersView'));
     document.getElementById('statsViewBtn').addEventListener('click', () => toggleView('statsView'));
-
+    
 });
 
 const token = localStorage.getItem('token');
+
+const mapDiv = document.getElementById('map');
 
 //verify admin
 async function checkAndRouteUser() {
@@ -352,6 +354,14 @@ function displayOrders(orders) {
                 groupDiv.appendChild(showMoreButton);
             }
 
+            if(status == 'Processing' && groupedOrders[status].length > 0)
+            {
+                mapDiv.style.display = "block";
+                mapDiv.style.height = "400px";
+                mapDiv.style.width = "100%";
+                groupDiv.appendChild(mapDiv);
+            }
+
             orderGroups.appendChild(groupDiv);
         }
     });
@@ -363,12 +373,16 @@ function createOrderListItem(order, status) {
         Order #${order._id} - ${new Date(order.orderDate).toLocaleDateString()}
         <button onclick="viewOrderDetails('${order._id}')">View Details</button>
         ${status !== 'Cancelled' && status !== 'Delivered' ? 
-            `<button onclick="updateOrderStatus('${order._id}', '${getNextStatus(status)}')">
-                Move to ${getNextStatus(status)}
-             </button>` : ''}
+            `<button class="update-status">Move to ${getNextStatus(status)}</button>` : ''}
         ${status === 'Pending' ? 
             `<button onclick="cancelOrder('${order._id}')">Cancel Order</button>` : ''}
     `;
+
+    li.querySelector('.update-status')?.addEventListener('click', () => {
+        updateOrderStatus(order._id, getNextStatus(status));
+        window.reloadMap?.();
+    });
+
     return li;
 }
 
