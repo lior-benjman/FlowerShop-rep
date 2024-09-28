@@ -2,6 +2,9 @@ import express from 'express';
 import { verifyToken, isAdmin } from '../middleware/auth.js';
 import { flowerController } from '../controllers/flowerController.js';
 import { orderController } from '../controllers/orderController.js';
+import { config } from "../config/config.js";
+
+const { mapsApiKey } = config;
 
 
 const adminRouter = express.Router();
@@ -13,6 +16,11 @@ adminRouter.use(verifyToken, isAdmin);
 adminRouter.get('/check', (req, res) => {
     res.json({ isAdmin: true });
 });
+
+adminRouter.get('/fetchMapsApi', (req, res) => {
+    res.json({ mapsApiKey });
+});
+
 
 //ordersManagement
 adminRouter.get('/orders', orderController.getAll);
