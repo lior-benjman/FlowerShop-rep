@@ -792,3 +792,9 @@ button[onclick^="cancelOrder"]:hover {
     box-shadow: none;
     padding: 0;
 }
+
+.order-map {
+    max-width: 800px;
+    margin: 20px auto;
+    border: 1px solid #ccc;
+}

@@ -12,9 +12,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('ordersViewBtn').addEventListener('click', () => toggleView('ordersView'));
     document.getElementById('statsViewBtn').addEventListener('click', () => toggleView('statsView'));
 
+
 });
 
 const token = localStorage.getItem('token');
+
+const mapDiv = document.getElementById('map');
 
 //verify admin
 async function checkAndRouteUser() {
@@ -350,6 +353,14 @@ function displayOrders(orders) {
                 showMoreButton.className = 'show-more-btn';
                 showMoreButton.onclick = () => toggleOrders(groupDiv);
                 groupDiv.appendChild(showMoreButton);
+            }
+
+            if(status == 'Processing' && groupedOrders[status].length > 0)
+            {
+                mapDiv.style.display = "block";
+                mapDiv.style.height = "400px";
+                mapDiv.style.width = "100%";
+                groupDiv.appendChild(mapDiv);
             }
 
             orderGroups.appendChild(groupDiv);
