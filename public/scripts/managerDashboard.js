@@ -1,5 +1,3 @@
-// manager-dashboard.js
-
 document.addEventListener('DOMContentLoaded', function() {
     checkAndRouteUser();
     loadInventory();

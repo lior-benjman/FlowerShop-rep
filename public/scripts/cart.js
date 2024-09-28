@@ -25,13 +25,57 @@ window.onclick = function(event) {
     }
 }
 
-document.getElementById("checkout-form").onsubmit = function(e) {
-    e.preventDefault();
 
-    console.log("Form submitted!");
-    modal.style.display = "none";
-    alert("Thank you for your purchase!");
+document.getElementById("checkout-form").onsubmit = async function(e) {
+    e.preventDefault();
+    const shippingAddress  = document.getElementById('address').value;
+    
+    if (!shippingAddress .trim()) {
+        alert("Please enter a valid shipping address.");
+        return;
+    }
+
+    try {
+        await createOrderFromCart({ shippingAddress  });
+        console.log("Order created successfully!");
+        modal.style.display = "none";
+        alert("Thank you for your purchase! Your order has been placed.");
+        window.location.href = '';
+    } catch (error) {
+        console.error("Error creating order:", error);
+        alert("There was an error processing your order. Please try again.");
+    }
 }
+
+async function createOrderFromCart(shippingAddress) {
+    try {
+        const response = await fetch(`/api/users/cart/create-from-cart/${user.id}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(shippingAddress),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to create order');
+        }
+
+        const orderData = await response.json();
+        return orderData;
+    } catch (error) {
+        console.error('Error creating order:', error);
+        throw error;
+    }
+}
+
+function clearCartDisplay() { //consider
+    document.querySelector('.cart-items').innerHTML = '';
+    document.querySelector('.cart-total').textContent = 'Total: $0.00';
+}
+
 
 async function fetchUserDetails() {
     const user = JSON.parse(localStorage.getItem('user'));
