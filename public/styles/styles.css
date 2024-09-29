@@ -325,7 +325,7 @@ header .banner .banner-content h3 {
 .product-grid, .gallery-grid, .footer-grid {
     display: grid;
     gap: 80px;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     max-width: 1600px;
     margin: 0 auto;
 }
@@ -345,7 +345,7 @@ header .banner .banner-content h3 {
 
 .product-item .image-container, .gallery-item .image-container {
     width: 100%;
-    padding-top: 100%; /* Creates a 1:1 aspect ratio container */
+    padding-top: 100%;
     position: relative;
     overflow: hidden;
     margin-bottom: 0.5rem;
@@ -357,7 +357,7 @@ header .banner .banner-content h3 {
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: contain; /* This will ensure the entire image is visible */
+    object-fit: contain;
     border-radius: 4px;
 }
 

@@ -9,9 +9,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const colorSelect = document.getElementById('color-select');
     const applyFiltersButton = document.getElementById('apply-filters');
     
+    window.addEventListener('resize', handleResize(resize, 400));
 
     let page = 1;
-    const limit = 4;
+    let limit = calculateProductsPerRow();
     let isShopPage = window.location.pathname.includes('shop.html');
     let isIndexPage = window.location.pathname.includes('index.html');
     let isViewingAll = false;
@@ -19,6 +20,30 @@ document.addEventListener('DOMContentLoaded', function() {
     const user = JSON.parse(localStorage.getItem('user'));
     const token = localStorage.getItem('token');
 
+
+    function calculateProductsPerRow() {
+        let screenWidth = window.innerWidth;
+        screenWidth = Math.min(screenWidth, 1600);
+        return Math.floor(screenWidth/340);
+    }
+
+    
+    function resize() {
+        limit = calculateProductsPerRow();
+        loadProducts(true);
+    }
+
+    function handleResize(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
 
     async function fetchProducts(pageNum, pageLimit, filters = {}, viewAll = false) {
         try {
@@ -61,13 +86,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function loadProducts(reset = false) {
+        let filters;
         if (reset) {
             productGrid.innerHTML = '';
             page = 1;
-            isViewingAll = false;
+            if(!(searchInput.value || sortSelect.value || categorySelect.value || colorSelect.value)){
+                isViewingAll = false;
+            }
+        }else{
+            filters = {};
         }
 
-        let filters = {};
+        if(!filters){
+            filters = {};
+        }
 
         if(!isIndexPage){
             filters = {
