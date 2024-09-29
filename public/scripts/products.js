@@ -42,12 +42,21 @@ document.addEventListener('DOMContentLoaded', function() {
     function createProductElement(product) {
         const productItem = document.createElement('div');
         productItem.className = 'product-item';
-        productItem.innerHTML = `
-            <img src="${product.imageUrl}" alt="${product.name}">
+        const imageContainer = document.createElement('div');
+        imageContainer.className = 'image-container';
+
+        imageContainer.innerHTML = `
+            <img src="${product.imageUrl}" alt="${product.name}">`;
+
+        productItem.appendChild(imageContainer);
+        
+        productItem.innerHTML += `
             <p>${product.name}</p>
             <p class="price">${product.price.toFixed(2)} ₪</p>
             <button class="add-to-cart" data-id="${product._id}">Add to Cart</button>
         `;
+
+
         return productItem;
     }
 

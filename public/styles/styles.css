@@ -336,20 +336,58 @@ header .banner .banner-content h3 {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+    height: 100%;
+}
+
+.product-item .image-container, .gallery-item .image-container {
+    width: 100%;
+    padding-top: 100%; /* Creates a 1:1 aspect ratio container */
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
 }
 
 .product-item img, .gallery-item img {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: contain; /* This will ensure the entire image is visible */
+    border-radius: 4px;
 }
 
-.product-item p{
-    font-size: 22px;;
+.product-item h3, .gallery-item h3 {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.product-item p, .gallery-item p {
+    margin: 0.25rem 0;
 }
 
 .product-item .price {
     font-size: 18px;
     color: rgb(85, 59, 106);
+}
+
+.product-item button, .gallery-item button {
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.product-item button:hover, .gallery-item button:hover {
+    background-color: #45a049;
 }
 
 .old-price {
