@@ -90,8 +90,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (reset) {
             productGrid.innerHTML = '';
             page = 1;
-            if(!(searchInput.value || sortSelect.value || categorySelect.value || colorSelect.value)){
-                isViewingAll = false;
+            if(!isIndexPage){
+                if(!(searchInput.value || sortSelect.value || categorySelect.value || colorSelect.value)){
+                    isViewingAll = false;
+                }
             }
         }else{
             filters = {};
