@@ -7,8 +7,8 @@ function initMap() {
       return;
     }
     map = new google.maps.Map(document.getElementById("map"), {
-      zoom: 3,
-      center: { lat: 0, lng: 0 },
+      zoom: 7,
+      center: { lat: 31.5, lng: 35 },
     });
     geocoder = new google.maps.Geocoder();
     console.log("Map initialized");
