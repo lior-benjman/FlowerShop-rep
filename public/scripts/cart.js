@@ -49,31 +49,20 @@ document.getElementById("checkout-form").onsubmit = async function(e) {
 
 async function createOrderFromCart(shippingAddress) {
     try {
-        const response = await fetch(`/api/users/cart/create-from-cart/${user.id}`, {
+        const orderData = await $.ajax({
+            url: `/api/users/cart/create-from-cart/${user.id}`,
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(shippingAddress),
+            contentType: 'application/json',
+            data: JSON.stringify(shippingAddress)
         });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to create order');
-        }
-
-        const orderData = await response.json();
         return orderData;
     } catch (error) {
         console.error('Error creating order:', error);
         throw error;
     }
-}
-
-function clearCartDisplay() { //consider
-    document.querySelector('.cart-items').innerHTML = '';
-    document.querySelector('.cart-total').textContent = 'Total: $0.00';
 }
 
 
@@ -85,22 +74,17 @@ async function fetchUserDetails() {
     }
 
     try {
-        const response = await fetch(`/api/users/${user.id}`, {
+        const userData = await $.ajax({
+            url: `/api/users/${user.id}`,
+            method: 'GET',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch user details');
-        }
-
-        const userData = await response.json();
-        console.log(userData);
         
-        document.getElementById('name').value = userData.firstName +" "+ userData.lastName;
-        document.getElementById('email').value = userData.email;
-        document.getElementById('address').value = userData.address || '';
+        $('#name').val(userData.firstName + " " + userData.lastName);
+        $('#email').val(userData.email);
+        $('#address').val(userData.address || '');
 
     } catch (error) {
         console.error('Error fetching user details:', error);
@@ -116,17 +100,13 @@ async function loadCart() {
     }
 
     try {
-        const response = await fetch(`/api/users/cart/${user.id}`, {
+        const cartData = await $.ajax({
+            url: `/api/users/cart/${user.id}`,
+            method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch cart data');
-        }
-
-        const cartData = await response.json();
         renderCart(cartData);
     } catch (error) {
         console.error('Error loading cart:', error);
@@ -140,6 +120,7 @@ function renderCart(cartData) {
 
     if (cartData.items.length === 0) {
         cartItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
+        updateCartSummary(cartData, true);
         return;
     }
 
@@ -150,7 +131,7 @@ function renderCart(cartData) {
             <img src="${item.flower.imageUrl}" alt="${item.flower.name}">
             <div class="item-details">
                 <h3>${item.flower.name}</h3>
-                <p>Price: $${item.flower.price.toFixed(2)}</p>
+                <p>Price: ${item.flower.price.toFixed(2)}₪</p>
                 <div class="quantity-control">
                     <button onclick="updateQuantity('${item.flower._id}', ${item.quantity - 1})">-</button>
                     <span>${item.quantity}</span>
@@ -162,17 +143,31 @@ function renderCart(cartData) {
         cartItemsContainer.appendChild(itemElement);
     });
 
-    updateCartSummary(cartData);
+    updateCartSummary(cartData, false);
 }
 
-function updateCartSummary(cartData) {
-    const subtotal = cartData.items.reduce((total, item) => total + (item.flower.price * item.quantity), 0);
-    const shipping = subtotal > 0 ? 10 : 0; // Example shipping cost
-    const total = subtotal + shipping;
+function updateCartSummary(cartData, resetCart) {
+    let subtotal = 0;
+    let shipping = 0;
+    let total = 0;
+    
+    if(!resetCart){
+        subtotal = cartData.items.reduce((total, item) => total + (item.flower.price * item.quantity), 0);
+        shipping = calculateShippingCost(subtotal);
+        total = subtotal + shipping;
+    }
 
-    document.getElementById('cart-subtotal').textContent = `$${subtotal.toFixed(2)}`;
-    document.getElementById('cart-shipping').textContent = `$${shipping.toFixed(2)}`;
-    document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
+    document.getElementById('cart-subtotal').textContent = `${subtotal.toFixed(2)}₪`;
+    document.getElementById('cart-shipping').textContent = `${shipping.toFixed(2)}₪`;
+    document.getElementById('cart-total').textContent = `${total.toFixed(2)}₪`;
+}
+
+function calculateShippingCost(subtotal){
+    if (subtotal > 150){
+        return 0;
+    } else {
+        return 10;
+    }
 }
 
 async function updateQuantity(flowerId, newQuantity) {
@@ -181,22 +176,19 @@ async function updateQuantity(flowerId, newQuantity) {
         return;
     }
     try {
-        const response = await fetch('/api/users/cart/update', {
+        await $.ajax({
+            url: '/api/users/cart/update',
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({
+            contentType: 'application/json',
+            data: JSON.stringify({
                 userId: user.id,
                 flowerId: flowerId,
                 quantity: newQuantity
             })
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to update cart');
-        }
 
         loadCart();
         updateCartCount();
@@ -208,21 +200,18 @@ async function updateQuantity(flowerId, newQuantity) {
 
 async function removeFromCart(flowerId) {
     try {
-        const response = await fetch('/api/users/cart/remove', {
+        await $.ajax({
+            url: '/api/users/cart/remove',
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({
+            contentType: 'application/json',
+            data: JSON.stringify({
                 userId: user.id,
                 flowerId: flowerId
             })
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to remove item from cart');
-        }
 
         loadCart();
         updateCartCount();
@@ -239,24 +228,20 @@ async function updateCartCount() {
     }
 
     try {
-        const response = await fetch(`/api/users/cart/${user.id}`, {
+        const cartData = await $.ajax({
+            url: `/api/users/cart/${user.id}`,
+            method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
+                'Authorization': `Bearer ${token}`
             }
         });
 
-        if (!response.ok) {
-            throw new Error('Failed to fetch cart data');
-        }
-
-        const cartData = await response.json();
         const cartCount = cartData.items.reduce((total, item) => total + item.quantity, 0);
 
-        const cartCountElement = document.getElementById('cart-count');
-        if (cartCountElement) {
-            cartCountElement.textContent = `Cart (${cartCount})`;
-            cartCountElement.style.display = cartCount > 0 ? 'inline' : 'none';
+        const cartCountElement = $('#cart-count');
+        if (cartCountElement.length) {
+            cartCountElement.text(`Cart (${cartCount})`);
+            cartCountElement.css('display', cartCount > 0 ? 'inline' : 'none');
         }
     
     } catch (error) {
@@ -265,6 +250,5 @@ async function updateCartCount() {
 }
 
 document.getElementById('checkout-button').addEventListener('click', function() {
-    // Implement checkout logic here
-    // Redirect to checkout page or open checkout modal
+
 });

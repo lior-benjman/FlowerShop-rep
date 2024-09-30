@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const signupForm = document.getElementById('register-form');
     if (signupForm) {
-        signupForm.addEventListener('submit', async function(event) {
+        signupForm.addEventListener('submit', function(event) {
             event.preventDefault();
 
             const username = document.getElementById('username').value;
@@ -16,27 +16,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            try {
-                const response = await fetch('/api/auth/signup', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username, firstName, lastName, email, password }),
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
+            $.ajax({
+                url: '/api/auth/signup',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ username, firstName, lastName, email, password }),
+                success: function(data) {
                     alert('Registration successful!');
                     window.location.href = 'login.html';
-                } else {
-                    alert(data.message || 'Registration failed!');
+                },
+                error: function(jqXHR) {
+                    alert(jqXHR.responseJSON.message || 'Registration failed!');
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-            }
+            });
         });
     }
 });

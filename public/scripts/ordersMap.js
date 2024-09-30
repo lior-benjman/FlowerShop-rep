@@ -13,28 +13,25 @@ function initMap() {
     geocoder = new google.maps.Geocoder();
     console.log("Map initialized");
     fetchProcessingOrders();
-  }
+}
 
-async function fetchProcessingOrders() {
-    try {
-        const response = await fetch('/api/admin/status/Processing',{
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                'Content-Type': 'application/json',
-            }
-        });
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+function fetchProcessingOrders() {
+    $.ajax({
+        url: '/api/admin/status/Processing',
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        success: function(locations) {
+            console.log(locations);
+            locations.forEach(location => {
+                geocodeAddress(location.address, location.id);
+            });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error fetching order locations:', textStatus, errorThrown);
         }
-        const locations = await response.json();
-        console.log(locations);
-        locations.forEach(location => {
-            geocodeAddress(location.address, location.id);
-        });
-    } catch (error) {
-        console.error('Error fetching order locations:', error);
-    }
+    });
 }
 
 function geocodeAddress(address, orderId) {

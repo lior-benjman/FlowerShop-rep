@@ -26,26 +26,15 @@ async function checkAndRouteUser() {
     }
 }
 
-async function verifyAdmin(){
+async function verifyAdmin() {
     try {
-        const response = await fetch('/api/admin/check', {
+        const data = await $.ajax({
+            url: '/api/admin/check',
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             }
         });
-
-        if (!response.ok) {
-            if (response.status === 401) {
-                console.error('Unauthorized: Token may be invalid or expired');
-            } else {
-                console.error('Error checking admin status:', response.statusText);
-            }
-            return false;
-        }
-
-        const data = await response.json();
         return data.isAdmin === true;
     } catch (error) {
         console.error('Error verifying admin:', error);
@@ -80,24 +69,27 @@ function toggleView(viewId) {
 async function loadStatistics() {
     try {
         const [ordersRevenueData, revenueByItemData, topSellingFlowersData] = await Promise.all([
-            fetch('/api/admin/statistics/orders-revenue', {
+            $.ajax({
+                url: '/api/admin/statistics/orders-revenue',
+                method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 }
-            }).then(res => res.json()),
-            fetch('/api/admin/statistics/revenue-by-item', {
+            }),
+            $.ajax({
+                url: '/api/admin/statistics/revenue-by-item',
+                method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 }
-            }).then(res => res.json()),
-            fetch('/api/admin/statistics/top-selling-flowers', {
+            }),
+            $.ajax({
+                url: '/api/admin/statistics/top-selling-flowers',
+                method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 }
-            }).then(res => res.json())
+            })
         ]);
 
         createOrdersRevenueChart(ordersRevenueData);
@@ -303,14 +295,13 @@ function createTopSellingFlowersChart(data) {
 
 async function loadOrders() {
     try {
-        const response = await fetch('/api/admin/orders',{
+        const orders = await $.ajax({
+            url: '/api/admin/orders',
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             }
         });
-        const orders = await response.json();
         displayOrders(orders);
     } catch (error) {
         console.error('Error loading orders:', error);
@@ -421,11 +412,13 @@ function getNextStatus(currentStatus) {
 
 async function viewOrderDetails(orderId) {
     try {
-        const response = await fetch(`/api/orders/${orderId}`);
-        const order = await response.json();
+        const order = await $.ajax({
+            url: `/api/orders/${orderId}`,
+            method: 'GET'
+        });
         
-        const modalContent = document.getElementById('orderDetailsContent');
-        modalContent.innerHTML = `
+        const modalContent = $('#orderDetailsContent');
+        modalContent.html(`
         <p><strong>Order ID:</strong> <span>${order._id}</span></p>
         <p><strong>Customer:</strong> <span>${order.user.username}</span></p>
         <p><strong>Order Date:</strong> <span>${new Date(order.orderDate).toLocaleString()}</span></p>
@@ -437,10 +430,10 @@ async function viewOrderDetails(orderId) {
             `).join('')}
         </ul>
         <p><strong>Shipping Address:</strong> <span>${order.shippingAddress}</span></p>
-        <p class="total-amount"><strong>Total Amount:</strong> <span>$${order.totalAmount.toFixed(2)}</span></p>
-    `;
+        <p class="total-amount"><strong>Total Amount:</strong> <span>${order.totalAmount.toFixed(2)}₪</span></p>
+        `);
         
-        document.getElementById('orderDetailsModal').style.display = 'block';
+        $('#orderDetailsModal').show();
     } catch (error) {
         console.error('Error fetching order details:', error);
         alert('Failed to load order details. Please try again.');
@@ -453,18 +446,15 @@ function closeOrderDetailsModal() {
 
 async function updateOrderStatus(orderId, newStatus) {
     try {
-        const response = await fetch(`/api/admin/orders/${orderId}/status`, {
+        await $.ajax({
+            url: `/api/admin/orders/${orderId}/status`,
             method: 'PUT',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ status: newStatus }),
+            contentType: 'application/json',
+            data: JSON.stringify({ status: newStatus })
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to update order status');
-        }
 
         alert('Order status updated successfully!');
         loadOrders();
@@ -476,17 +466,13 @@ async function updateOrderStatus(orderId, newStatus) {
 
 async function cancelOrder(orderId) {
     try {
-        const response = await fetch(`/api/admin/orders/${orderId}/cancel`, {
+        await $.ajax({
+            url: `/api/admin/orders/${orderId}/cancel`,
             method: 'PUT',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
+                'Authorization': `Bearer ${token}`
+            }
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to cancel order');
-        }
 
         alert('Order cancelled successfully!');
         loadOrders();
@@ -501,10 +487,11 @@ async function cancelOrder(orderId) {
 
 async function loadInventory() {
     try {
-        const response = await fetch('/api/flowers');
-        const flowersData = await response.json();
+        const flowersData = await $.ajax({
+            url: '/api/flowers',
+            method: 'GET'
+        });
         const flowers = flowersData.flowers;
-        console.log(flowers);
         displayInventory(flowers);
     } catch (error) {
         console.error('Error loading inventory:', error);
@@ -534,18 +521,15 @@ function displayInventory(flowers) {
 
 async function updateStock(flowerId, newStock) {
     try {
-        const response = await fetch(`/api/admin/${flowerId}/stock`, {
+        await $.ajax({
+            url: `/api/admin/${flowerId}/stock`,
             method: 'PUT',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ stock: newStock }),
+            contentType: 'application/json',
+            data: JSON.stringify({ stock: newStock })
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to update stock');
-        }
 
         alert('Stock updated successfully!');
     } catch (error) {
@@ -556,18 +540,20 @@ async function updateStock(flowerId, newStock) {
 
 async function openEditFlower(flowerId) {
     try {
-        const response = await fetch(`/api/flowers/${flowerId}`);
-        const flower = await response.json();
+        const flower = await $.ajax({
+            url: `/api/flowers/${flowerId}`,
+            method: 'GET'
+        });
         
-        document.getElementById('editFlowerId').value = flower._id;
-        document.getElementById('editName').value = flower.name;
-        document.getElementById('editPrice').value = flower.price;
-        document.getElementById('editDescription').value = flower.description;
-        document.getElementById('editCategory').value = flower.category;
-        document.getElementById('editColor').value = flower.color;
-        document.getElementById('editImageUrl').value = flower.imageUrl;
+        $('#editFlowerId').val(flower._id);
+        $('#editName').val(flower.name);
+        $('#editPrice').val(flower.price);
+        $('#editDescription').val(flower.description);
+        $('#editCategory').val(flower.category);
+        $('#editColor').val(flower.color);
+        $('#editImageUrl').val(flower.imageUrl);
         
-        document.getElementById('editFlowerModal').style.display = 'block';
+        $('#editFlowerModal').show();
     } catch (error) {
         console.error('Error fetching flower details:', error);
         alert('Failed to load flower details. Please try again.');
@@ -581,21 +567,18 @@ async function updateFlower(event) {
     const flowerId = flowerData.id;
 
     try {
-        const response = await fetch(`/api/admin/${flowerId}`, {
+        await $.ajax({
+            url: `/api/admin/${flowerId}`,
             method: 'PUT',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(flowerData),
+            contentType: 'application/json',
+            data: JSON.stringify(flowerData)
         });
 
-        if (!response.ok) {
-            throw new Error('Failed to update flower');
-        }
-
         alert('Flower updated successfully!');
-        document.getElementById('editFlowerModal').style.display = 'none';
+        $('#editFlowerModal').hide();
         loadInventory();
     } catch (error) {
         console.error('Error updating flower:', error);
@@ -625,29 +608,25 @@ function showAddProductForm() {
 }
 
 async function addNewProduct(event) {
-
     event.preventDefault();
 
     const formData = new FormData(event.target);
     const productData = Object.fromEntries(formData.entries());
-    console.log(productData);
+    
     try {
-        const response = await fetch('/api/admin/add-flower', {
+        await $.ajax({
+            url: '/api/admin/add-flower',
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(productData),
+            contentType: 'application/json',
+            data: JSON.stringify(productData)
         });
 
-        if (response.ok) {
-            alert('Product added successfully!');
-            event.target.reset();
-            loadInventory();
-        } else {
-            throw new Error('Failed to add product');
-        }
+        alert('Product added successfully!');
+        event.target.reset();
+        loadInventory();
     } catch (error) {
         console.error('Error adding product:', error);
         alert('Failed to add product. Please try again.');

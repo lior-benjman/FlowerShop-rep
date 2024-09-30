@@ -55,9 +55,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (filters.category) url += `&category=${filters.category}`;
             if (filters.color) url += `&color=${filters.color}`;
 
-            const response = await fetch(url);
-            const products = await response.json();
-            return products;
+            return $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'json'
+            });
         } catch (error) {
             console.error('Error fetching products:', error);
             return { flowers: [] };
@@ -185,25 +187,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            const response = await fetch('/api/users/cart/add', {
+            const response = await $.ajax({
+                url: '/api/users/cart/add',
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({
+                contentType: 'application/json',
+                data: JSON.stringify({
                     userId: user.id,
                     flowerId: productId,
                     quantity: 1
                 })
             });
 
-            if (response.ok) {
-                alert('Product added to cart!');
-                updateCartCount();
-            } else {
-                throw new Error('Failed to add product to cart');
-            }
+            alert('Product added to cart!');
+            updateCartCount();
         } catch (error) {
             console.error('Error adding to cart:', error);
             alert('Failed to add product to cart. Please try again.');
@@ -217,18 +216,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     
         try {
-            const response = await fetch(`/api/users/cart/${user.id}`, {
+            const cartData = await $.ajax({
+                url: `/api/users/cart/${user.id}`,
+                method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
+                    'Authorization': `Bearer ${token}`
+                },
+                dataType: 'json'
             });
     
-            if (!response.ok) {
-                throw new Error('Failed to fetch cart data');
-            }
-    
-            const cartData = await response.json();
             const cartCount = cartData.items.reduce((total, item) => total + item.quantity, 0);
     
             const cartCountElement = document.getElementById('cart-count');
@@ -244,8 +240,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function populateFilterOptions() {
         try {
-            const response = await fetch('/api/flowers/filter-options');
-            const options = await response.json();
+            const options = await $.ajax({
+                url: '/api/flowers/filter-options',
+                method: 'GET',
+                dataType: 'json'
+            });
+
             options.categories.forEach(category => {
                 const option = document.createElement('option');
                 option.value = category;
@@ -284,7 +284,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 
-    // Only load initial products and populate filters if we're on the shop page
     if(!isIndexPage){
         populateFilterOptions();
     }
