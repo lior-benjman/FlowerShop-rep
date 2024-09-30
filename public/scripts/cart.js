@@ -250,6 +250,5 @@ async function updateCartCount() {
 }
 
 document.getElementById('checkout-button').addEventListener('click', function() {
-    // Implement checkout logic here
-    // Redirect to checkout page or open checkout modal
+
 });
