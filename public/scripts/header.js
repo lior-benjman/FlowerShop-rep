@@ -46,83 +46,82 @@ document.addEventListener('DOMContentLoaded', function() {
         return userButton;
     }
 
-    async function getCartItemCount() {
-        if (!user) return 0;
-        try {
-            const response = await fetch(`/api/users/cart/${user.id}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            const data = await response.json();
-            return data.itemCount || 0;
-        } catch (error) {
-            console.error('Error fetching cart:', error);
-            return 0;
-        }
-    }
-
-    async function checkTokenValidity() {
-        if (!token) return false;
-        try {
-            const response = await fetch('/api/auth/check-token', {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (!response.ok) throw new Error('Token invalid');
-            return true;
-        } catch (error) {
-            console.error('Error checking token validity:', error);
-            return false;
-        }
-    }
-
-
-    async function updateHeader() {
-        const isTokenValid = await checkTokenValidity();
-        const isAdmin = isTokenValid && await checkAdminStatus();
-        userActionsDiv.innerHTML = '';
-        if (isTokenValid && user && user.username) {
-            userActionsDiv.appendChild(createUserButton(user.username, isAdmin));
-            userActionsDiv.appendChild(createLogoutButton());
-        } else {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            userActionsDiv.appendChild(createLoginButton());
-        }
-
-        const itemCount = await getCartItemCount();
-        const cartLink = document.createElement('a');
-        cartLink.href = "cart.html";
-        cartLink.textContent = `Cart (${itemCount})`;
-        cartLink.id = 'cart-count';
-        userActionsDiv.appendChild(cartLink);
-    }
-
-    async function checkAdminStatus() {
-        if (!token) return false;
-
-        try {
-            const response = await fetch('/api/admin/check', {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (response.status === 403) {
-                return false; // User is not an admin
+    function getCartItemCount() {
+        if (!user) return Promise.resolve(0);
+        return $.ajax({
+            url: `/api/users/cart/${user.id}`,
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
             }
-            if (!response.ok) throw new Error('Network response was not ok');
-            const data = await response.json();
-            return data.isAdmin;
-        } catch (error) {
-            console.error('Error checking admin status:', error);
-            return false;
-        }
+        }).then(function(data) {
+            return data.itemCount || 0;
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error('Error fetching cart:', textStatus, errorThrown);
+            return 0;
+        });
     }
 
+    function checkTokenValidity() {
+        if (!token) return Promise.resolve(false);
+        return $.ajax({
+            url: '/api/auth/check-token',
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).then(function() {
+            return true;
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error('Error checking token validity:', textStatus, errorThrown);
+            return false;
+        });
+    }
+
+    function checkAdminStatus() {
+        if (!token) return Promise.resolve(false);
+        return $.ajax({
+            url: '/api/admin/check',
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        }).then(function(data) {
+            return data.isAdmin;
+        }).catch(function(jqXHR) {
+            console.error('Error checking admin status:', jqXHR.responseText);
+            return false;
+        });
+    }
+
+    function updateHeader() {
+        Promise.all([
+            checkTokenValidity().catch(() => false),
+            checkAdminStatus().catch(() => false),
+            getCartItemCount().catch(() => 0)
+        ])
+        .then(function([isTokenValid, isAdmin, itemCount]) {
+            userActionsDiv.innerHTML = '';
+            if (isTokenValid && user && user.username) {
+                userActionsDiv.appendChild(createUserButton(user.username, isAdmin));
+                userActionsDiv.appendChild(createLogoutButton());
+            } else {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                userActionsDiv.appendChild(createLoginButton());
+            }
+    
+            const cartLink = document.createElement('a');
+            cartLink.href = "cart.html";
+            cartLink.textContent = `Cart (${itemCount})`;
+            cartLink.id = 'cart-count';
+            userActionsDiv.appendChild(cartLink);
+        })
+        .catch(function(error) {
+            console.error('Error updating header:', error);
+            userActionsDiv.innerHTML = '';
+            userActionsDiv.appendChild(createLoginButton());
+        });
+    }
     updateHeader();
 });
