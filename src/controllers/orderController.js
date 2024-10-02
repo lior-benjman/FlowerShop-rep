@@ -172,8 +172,6 @@ export const orderController = {
       order.status = 'Cancelled';
       await order.save();
   
-      // Restore inventory
-      console.log(order.items);
       for (let item of order.items) {
         await Flower.findByIdAndUpdate(item.flower._id, { $inc: { stock: item.quantity } });
       }

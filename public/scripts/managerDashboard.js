@@ -416,7 +416,7 @@ async function viewOrderDetails(orderId) {
             url: `/api/orders/${orderId}`,
             method: 'GET'
         });
-        
+        let shippingCost = order.totalAmount > 150 ? 0 : 10;
         const modalContent = $('#orderDetailsContent');
         modalContent.html(`
         <p><strong>Order ID:</strong> <span>${order._id}</span></p>
@@ -428,9 +428,10 @@ async function viewOrderDetails(orderId) {
             ${order.items.map(item => `
                 <li>${item.flower.name} - Quantity: ${item.quantity}</li>
             `).join('')}
+            <li>Shipping: ${shippingCost}₪</li>
         </ul>
         <p><strong>Shipping Address:</strong> <span>${order.shippingAddress}</span></p>
-        <p class="total-amount"><strong>Total Amount:</strong> <span>${order.totalAmount.toFixed(2)}₪</span></p>
+        <p class="total-amount"><strong>Total Amount:</strong> <span>${(order.totalAmount+shippingCost).toFixed(2)}₪</span></p>
         `);
         
         $('#orderDetailsModal').show();
