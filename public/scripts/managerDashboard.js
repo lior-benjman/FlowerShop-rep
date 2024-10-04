@@ -316,14 +316,15 @@ function displayOrders(orders) {
     const statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
 
     statuses.forEach(status => {
+        
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'order-group';
+        groupDiv.innerHTML = `<h3>${status} Orders</h3>`;
+
+        const orderList = document.createElement('ul');
+        orderList.className = 'order-list';
+    
         if (groupedOrders[status]) {
-            const groupDiv = document.createElement('div');
-            groupDiv.className = 'order-group';
-            groupDiv.innerHTML = `<h3>${status} Orders</h3>`;
-
-            const orderList = document.createElement('ul');
-            orderList.className = 'order-list';
-
             groupedOrders[status].forEach((order, index) => {
                 const li = createOrderListItem(order, status);
                 if (index < 3) {
@@ -334,27 +335,31 @@ function displayOrders(orders) {
                 }
                 orderList.appendChild(li);
             });
-
-            groupDiv.appendChild(orderList);
-
-            if (groupedOrders[status].length > 3) {
-                const showMoreButton = document.createElement('button');
-                showMoreButton.textContent = 'Show More';
-                showMoreButton.className = 'show-more-btn';
-                showMoreButton.onclick = () => toggleOrders(groupDiv);
-                groupDiv.appendChild(showMoreButton);
-            }
-
-            if(status == 'Processing' && groupedOrders[status].length > 0)
-            {
-                mapDiv.style.display = "block";
-                mapDiv.style.height = "400px";
-                mapDiv.style.width = "100%";
-                groupDiv.appendChild(mapDiv);
-            }
-
-            orderGroups.appendChild(groupDiv);
+        } else {
+            const li = document.createElement('li');
+            li.innerHTML = 'Nothing to see here yet...';
+            orderList.appendChild(li);
         }
+        groupDiv.appendChild(orderList);
+
+        if (groupedOrders[status].length > 3) {
+            const showMoreButton = document.createElement('button');
+            showMoreButton.textContent = 'Show More';
+            showMoreButton.className = 'show-more-btn';
+            showMoreButton.onclick = () => toggleOrders(groupDiv);
+            groupDiv.appendChild(showMoreButton);
+        }
+
+        if(status == 'Processing' && groupedOrders[status].length > 0)
+        {
+            mapDiv.style.display = "block";
+            mapDiv.style.height = "400px";
+            mapDiv.style.width = "100%";
+            groupDiv.appendChild(mapDiv);
+        }
+
+        orderGroups.appendChild(groupDiv);
+        
     });
 }
 
@@ -416,7 +421,7 @@ async function viewOrderDetails(orderId) {
             url: `/api/orders/${orderId}`,
             method: 'GET'
         });
-        
+        let shippingCost = order.totalAmount > 150 ? 0 : 10;
         const modalContent = $('#orderDetailsContent');
         modalContent.html(`
         <p><strong>Order ID:</strong> <span>${order._id}</span></p>
@@ -428,9 +433,10 @@ async function viewOrderDetails(orderId) {
             ${order.items.map(item => `
                 <li>${item.flower.name} - Quantity: ${item.quantity}</li>
             `).join('')}
+            <li>Shipping: ${shippingCost}₪</li>
         </ul>
         <p><strong>Shipping Address:</strong> <span>${order.shippingAddress}</span></p>
-        <p class="total-amount"><strong>Total Amount:</strong> <span>${order.totalAmount.toFixed(2)}₪</span></p>
+        <p class="total-amount"><strong>Total Amount:</strong> <span>${(order.totalAmount+shippingCost).toFixed(2)}₪</span></p>
         `);
         
         $('#orderDetailsModal').show();
