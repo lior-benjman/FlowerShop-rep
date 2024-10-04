@@ -153,7 +153,6 @@ button[onclick^="cancelOrder"]:hover {
     }
 }
 
-/* Order group header colors */
 .order-group:nth-child(1) h3 { color: #f39c12; } /* Pending */
 .order-group:nth-child(2) h3 { color: #3498db; } /* Processing */
 .order-group:nth-child(3) h3 { color: #2ecc71; } /* Shipped */

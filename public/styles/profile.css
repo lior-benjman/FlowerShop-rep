@@ -52,10 +52,6 @@ button {
     margin: 2px;
 }
 
-button:hover { transform: translateY(-1px); }
-button:active { transform: translateY(1px); }
-
-
 .form-group {
     margin-bottom: 15px;
 }
