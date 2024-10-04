@@ -26,6 +26,21 @@ document.addEventListener('DOMContentLoaded', function() {
         updateProfile();
     });
 
+    $('#changePasswordBtn').on('click', function() {
+        showChangePasswordModal();
+    });
+
+    $('#changePasswordForm').on('submit', function(e) {
+        e.preventDefault();
+        changePassword();
+    });
+
+    $('#deleteAccountBtn').on('click', function() {
+        if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+            deleteAccount();
+        }
+    });
+
 });
 
 const user = JSON.parse(localStorage.getItem('user'));
@@ -274,6 +289,63 @@ function updateProfile() {
         error: function(xhr) {
             console.error('Error updating profile:', xhr.responseText);
             alert('Failed to update profile. Please try again.');
+        }
+    });
+}
+
+function showChangePasswordModal() {
+    $('#changePasswordModal').show();
+}
+
+function changePassword() {
+    const currentPassword = $('#currentPassword').val();
+    const newPassword = $('#newPassword').val();
+    const confirmPassword = $('#confirmPassword').val();
+
+    if (newPassword !== confirmPassword) {
+        alert('New passwords do not match.');
+        return;
+    }
+
+    $.ajax({
+        url: `/api/users/${user.id}/change-password`,
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+        data: JSON.stringify({ currentPassword, newPassword }),
+        contentType: 'application/json',
+        success: function(response) {
+            alert('Password changed successfully!');
+            $('#changePasswordModal').hide();
+        },
+        error: function(xhr) {
+            console.error('Error changing password:', xhr.responseText);
+            alert('Failed to change password. Please try again.');
+        }
+    });
+}
+
+function deleteAccount() {
+    $.ajax({
+        url: `/api/users/${user.id}`,
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+        success: function(response) {
+            alert('Account deleted successfully!');
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
+            window.location.href = 'index.html';
+        },
+        error: function(xhr) {
+            console.error('Error deleting account:', xhr.responseText);
+            if (xhr.status === 400) {
+                alert('Cannot delete account: You have active orders.');
+            } else {
+                alert('Failed to delete account. Please try again.');
+            }
         }
     });
 }

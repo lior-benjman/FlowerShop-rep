@@ -44,13 +44,27 @@ export const userController = {
   },
   delete: async (req, res) => {
     try {
-      const deletedUser = await User.findByIdAndDelete(req.params.id);
+      const userId = req.params.id;
+      const activeOrders = await Order.find({ 
+        user: userId, 
+        status: { $in: ['Pending', 'Processing', 'Shipped'] }
+      });
+      
+      if (activeOrders.length > 0) {
+        return res.status(400).json({ message: "Cannot delete user with active orders" });
+      }
+
+      const deletedUser = await User.findByIdAndDelete(userId);
       if (!deletedUser) return res.status(404).json({ message: "User not found" });
-      res.json({ message: "User deleted successfully" });
+      
+      await Order.deleteMany({ user: userId });
+
+      res.json({ message: "User and associated orders deleted successfully" });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   },
+
 
   //Registration
 
@@ -234,7 +248,8 @@ export const userController = {
   //Password
   changePassword: async (req, res) => {
     try {
-      const { userId, currentPassword, newPassword } = req.body;
+      const { currentPassword, newPassword } = req.body;
+      const userId = req.params.id;
       const user = await User.findById(userId);
       if (!user) return res.status(404).json({ message: "User not found" });
 
@@ -250,6 +265,7 @@ export const userController = {
       res.status(400).json({ message: error.message });
     }
   },
+
   //Orders
   getUserOrders: async (req, res) => {
     try {

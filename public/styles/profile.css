@@ -69,3 +69,25 @@ button {
     border-radius: 4px;
 }
 
+.danger-btn {
+    background-color: #ff4d4d;
+    color: white;
+}
+
+.danger-btn:hover {
+    background-color: #ff3333;
+}
+
+#changePasswordBtn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+#changePasswordBtn:hover {
+    background-color: #45a049;
+}
