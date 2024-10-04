@@ -88,6 +88,15 @@ button[onclick^="cancelOrder"]:hover {
     background-color: #c0392b;
 }
 
+button[onclick^="deleteOrder"] {
+    background-color: #e74c3c;
+    color: white;
+}
+
+button[onclick^="deleteOrder"]:hover {
+    background-color: #c0392b;
+}
+
 #orderDetailsContent {
     margin-top: 20px;
     font-size: 14px;

@@ -26,6 +26,7 @@ adminRouter.get('/orders', orderController.getAll);
 adminRouter.put('/orders/:id/status', orderController.updateOrderStatus);
 adminRouter.put('/orders/:id/cancel', orderController.cancelOrder);
 adminRouter.get('/status/:status', orderController.getProcessingOrders);
+adminRouter.delete('/orders/:id', orderController.delete);
 
 //flowersManagement
 adminRouter.post('/add-flower', flowerController.create);

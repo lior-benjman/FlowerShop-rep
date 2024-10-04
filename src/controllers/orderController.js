@@ -136,7 +136,6 @@ export const orderController = {
   
   cancelOrder: async (req, res) => {
     try {
-      console.log("Reached");
       const { id } = req.params;
       const order = await Order.findById(id).populate('items.flower');
       if (!order) return res.status(404).json({ message: "Order not found" });

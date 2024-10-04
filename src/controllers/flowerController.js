@@ -3,7 +3,6 @@ import Flower from "../schema/models/Flower.js";
 export const flowerController = {
   create: async (req, res) => {
     try {
-      console.log("reached");
       const newFlower = new Flower(req.body);
       await newFlower.save();
       res.status(201).json(newFlower);

@@ -372,7 +372,9 @@ function createOrderListItem(order, status) {
             `<button class="update-status">Move to ${getNextStatus(status)}</button>` : ''}
         ${status === 'Pending' ? 
             `<button onclick="cancelOrder('${order._id}')">Cancel Order</button>` : ''}
-    `;
+        ${(status === 'Delivered' || status === 'Cancelled') ?
+            `<button onclick="deleteOrder('${order._id}')">Delete Order</button>` : ''}
+        `;
 
     li.querySelector('.update-status')?.addEventListener('click', () => {
         updateOrderStatus(order._id, getNextStatus(status));
@@ -486,6 +488,26 @@ async function cancelOrder(orderId) {
     } catch (error) {
         console.error('Error cancelling order:', error);
         alert('Failed to cancel order. Please try again.');
+    }
+}
+
+async function deleteOrder(orderId) {
+    if (confirm('Are you sure you want to delete this order from the list? This action cannot be undone.')) {
+        try {
+            await $.ajax({
+                url: `/api/admin/orders/${orderId}`,
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            alert('Order deleted successfully!');
+            loadOrders();
+        } catch (error) {
+            console.error('Error deleting order:', error);
+            alert('Failed to delete order. Please try again.');
+        }
     }
 }
 

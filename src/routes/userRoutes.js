@@ -27,6 +27,7 @@ userRouter.put('/change-password', userController.changePassword);
 
 userRouter.get('/:userId/orders', userController.getUserOrders);
 userRouter.put('/orders/:id/cancel', orderController.cancelOrder);
+userRouter.delete('/orders/:id', orderController.delete);
 
 userRouter.get('/profile/:userId', userController.getUserProfile);
 userRouter.put('/profile/:userId', userController.updateUserProfile);
