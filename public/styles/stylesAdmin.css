@@ -131,8 +131,30 @@ body {
     transition: background-color 0.3s;
 }
 
-.inventory-table button:hover, #addProductBtn:hover {
+.inventory-table button:active {
+    transform: scale(0.95);
+}
+
+#addProductBtn:hover {
     background-color: #2980b9;
+}
+
+.inventory-table .edit-btn {
+    background-color: #3498db;
+    color: white;
+}
+
+.inventory-table .delete-btn {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.inventory-table .edit-btn:hover {
+    background-color: #2980b9;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
 }
 
 #addProductBtn {
@@ -201,11 +223,6 @@ body {
 
 .delete-btn {
     background-color: #ff4d4d;
-    color: white;
-}
-
-.edit-btn {
-    background-color: #4CAF50;
     color: white;
 }
 
@@ -282,5 +299,20 @@ button {
         white-space: nowrap;
         text-align: left;
         font-weight: bold;
+    }
+
+    .inventory-table td[data-label="Actions"] {
+        display: flex;
+        justify-content: flex-end;
+        padding-left: 0;
+    }
+
+    .inventory-table td[data-label="Actions"]::before {
+        display: none;
+    }
+
+    .inventory-table td[data-label="Actions"] button {
+        flex: 1;
+        margin: 2px;
     }
 }

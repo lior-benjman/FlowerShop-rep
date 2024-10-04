@@ -539,7 +539,8 @@ function displayInventory(flowers) {
                            onchange="updateStock('${flower._id}', this.value)">
                 </td>
                 <td data-label="Actions">
-                    <button onclick="openEditFlower('${flower._id}')">Edit</button>
+                    <button class="edit-btn" onclick="openEditFlower('${flower._id}')">Edit</button>
+                    <button class="delete-btn" onclick="deleteFlower('${flower._id}')">Delete</button>
                 </td>
             </tr>
         `;
@@ -563,6 +564,26 @@ async function updateStock(flowerId, newStock) {
     } catch (error) {
         console.error('Error updating stock:', error);
         alert('Failed to update stock. Please try again.');
+    }
+}
+
+async function deleteFlower(flowerId) {
+    if (confirm('Are you sure you want to delete this flower? This action cannot be undone.')) {
+        try {
+            await $.ajax({
+                url: `/api/admin/flowers/${flowerId}`,
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            alert('Flower deleted successfully!');
+            loadInventory();
+        } catch (error) {
+            console.error('Error deleting flower:', error);
+            alert('Failed to delete flower. Please try again.');
+        }
     }
 }
 

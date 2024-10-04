@@ -32,6 +32,7 @@ adminRouter.delete('/orders/:id', orderController.delete);
 adminRouter.post('/add-flower', flowerController.create);
 adminRouter.put('/:id/stock', flowerController.updateStock);
 adminRouter.put('/:id', flowerController.update);
+adminRouter.delete('/flowers/:id', flowerController.delete);
 
 // Statistics routes
 adminRouter.get('/statistics/orders-revenue', orderController.getOrdersRevenueStats);
