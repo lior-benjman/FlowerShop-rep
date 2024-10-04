@@ -4,31 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manager Dashboard</title>
-    <link rel="stylesheet" href="../styles/stylesAdmin.css">
     <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/stylesAdmin.css">
+    <link rel="stylesheet" href="../styles/orders.css">
 
 </head>
 <body>
     <header>
-       
         <div class="banner">
+                <video  autoplay muted loop id="myVideo">
+                <source src="../videos/banner.mp4" type="video/mp4"></video>
             <nav>
                 <div class="logo">C</div>
                 <ul>
                     <li><a href="../views/index.html">Home</a></li>
-                    <li><a href="#">Dashboard</a></li>
-                    <li><a href="#">Reports</a></li>
-                    <li><a href="#">Settings</a></li>
+                    <li><a href="../views/shop.html">Shop</a></li>
+                    <li><a href="../views/aboutus.html">About</a></li>
+                    <li><a href="../views/contactus.html">Contact</a></li>
                 </ul>
                 <div class="user-actions"></div>
             </nav>
-
             <div class="banner-content">
                 <h1>Manager Dashboard</h1>
                 <h2>Track your sales, manage inventory, and view recent orders.</h2>
             </div>
         </div>
-
     </header>
     
 
@@ -42,10 +42,33 @@
         <div id="ordersView" class="dashboard-view" style="display: none;">
             <section class="order-management">
                 <h2>Order Management</h2>
+                <div id="orderControls">
+                    <div class="filter-options">
+                      <h4>Filter by Status:</h4>
+                      <label><input type="checkbox" name="status" value="Pending" checked> Pending</label>
+                      <label><input type="checkbox" name="status" value="Processing" checked> Processing</label>
+                      <label><input type="checkbox" name="status" value="Shipped" checked> Shipped</label>
+                      <label><input type="checkbox" name="status" value="Delivered" checked> Delivered</label>
+                      <label><input type="checkbox" name="status" value="Cancelled" checked> Cancelled</label>
+                    </div>
+                    <div class="sort-options">
+                      <h4>Sort by:</h4>
+                      <select id="sortOption">
+                        <option value="dateAsc">Date (Oldest First)</option>
+                        <option value="dateDesc">Date (Newest First)</option>
+                        <option value="priceAsc">Price (Low to High)</option>
+                        <option value="priceDesc">Price (High to Low)</option>
+                      </select>
+                    </div>
+                    <div class="date-range">
+                      <h4>Date Range:</h4>
+                      <input type="date" id="startDate">
+                      <input type="date" id="endDate">
+                    </div>
+                </div>
                 <div id="orderGroups"></div>
             </section>
-
-
+            
             <div id="orderDetailsModal" class="modal" style="display: none;">
                 <div class="modal-content">
                     <span class="close" onclick="closeOrderDetailsModal()">&times;</span>

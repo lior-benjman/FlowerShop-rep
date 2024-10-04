@@ -11,8 +11,7 @@ userRouter.get('/check', (req, res) => {
     res.json({ loggedIn: true });
 });
 
-userRouter.post('/', userController.create);
-userRouter.get('/', userController.getAll);
+
 userRouter.get('/:id', userController.getById);
 userRouter.put('/:id', userController.update);
 userRouter.delete('/:id', userController.delete);
@@ -24,15 +23,13 @@ userRouter.post('/cart/clear', userController.clearCart);
 userRouter.get('/cart/:userId', userController.getCart);
 userRouter.post('/cart/create-from-cart/:userId', orderController.createFromCart);
 
-userRouter.put('/change-password', userController.changePassword);
+userRouter.put('/:id/change-password', userController.changePassword);
 
 userRouter.get('/:userId/orders', userController.getUserOrders);
 userRouter.put('/orders/:id/cancel', orderController.cancelOrder);
+userRouter.delete('/orders/:id', orderController.delete);
 
 userRouter.get('/profile/:userId', userController.getUserProfile);
 userRouter.put('/profile/:userId', userController.updateUserProfile);
-
-
-
 
 export default userRouter;

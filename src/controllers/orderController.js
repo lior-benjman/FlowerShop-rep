@@ -34,15 +34,7 @@ export const orderController = {
       res.status(500).json({ message: error.message });
     }
   },
-  update: async (req, res) => {
-    try {
-      const updatedOrder = await Order.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      if (!updatedOrder) return res.status(404).json({ message: "Order not found" });
-      res.json(updatedOrder);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  },
+
   delete: async (req, res) => {
     try {
       const deletedOrder = await Order.findByIdAndDelete(req.params.id);
@@ -142,28 +134,8 @@ export const orderController = {
     }
   },
   
-  generateOrderReport: async (req, res) => {
-    try {
-      const { startDate, endDate } = req.query;
-      const orders = await Order.find({
-        createdAt: { $gte: new Date(startDate), $lte: new Date(endDate) }
-      }).populate('items.flower');
-      
-      const report = {
-        totalOrders: orders.length,
-        totalRevenue: orders.reduce((sum, order) => sum + order.totalAmount, 0)
-        //More Data Needed
-      };
-      
-      res.json(report);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
-
   cancelOrder: async (req, res) => {
     try {
-      console.log("Reached");
       const { id } = req.params;
       const order = await Order.findById(id).populate('items.flower');
       if (!order) return res.status(404).json({ message: "Order not found" });

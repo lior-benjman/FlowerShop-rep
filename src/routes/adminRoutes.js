@@ -12,7 +12,6 @@ const adminRouter = express.Router();
 
 adminRouter.use(verifyToken, isAdmin);
 
-//adminRouter.get('/dashboard', );
 adminRouter.get('/check', (req, res) => {
     res.json({ isAdmin: true });
 });
@@ -27,11 +26,13 @@ adminRouter.get('/orders', orderController.getAll);
 adminRouter.put('/orders/:id/status', orderController.updateOrderStatus);
 adminRouter.put('/orders/:id/cancel', orderController.cancelOrder);
 adminRouter.get('/status/:status', orderController.getProcessingOrders);
+adminRouter.delete('/orders/:id', orderController.delete);
 
 //flowersManagement
 adminRouter.post('/add-flower', flowerController.create);
 adminRouter.put('/:id/stock', flowerController.updateStock);
 adminRouter.put('/:id', flowerController.update);
+adminRouter.delete('/flowers/:id', flowerController.delete);
 
 // Statistics routes
 adminRouter.get('/statistics/orders-revenue', orderController.getOrdersRevenueStats);

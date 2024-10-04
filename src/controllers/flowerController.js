@@ -3,7 +3,6 @@ import Flower from "../schema/models/Flower.js";
 export const flowerController = {
   create: async (req, res) => {
     try {
-      console.log("reached");
       const newFlower = new Flower(req.body);
       await newFlower.save();
       res.status(201).json(newFlower);
@@ -98,41 +97,6 @@ export const flowerController = {
       const deletedFlower = await Flower.findByIdAndDelete(req.params.id);
       if (!deletedFlower) return res.status(404).json({ message: "Flower not found" });
       res.json({ message: "Flower deleted successfully" });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
-
-  searchFlowers: async (req, res) => {
-    try {
-      const { query } = req.query;
-      const flowers = await Flower.find({
-        $or: [
-          { name: { $regex: query, $options: 'i' } },
-          { description: { $regex: query, $options: 'i' } }
-        ]
-      });
-      res.json(flowers);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
-
-  getFlowersByCategory: async (req, res) => {
-    try {
-      const { category } = req.params;
-      const flowers = await Flower.find({ category: category });
-      res.json(flowers);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
-
-  getFlowersByColor: async (req, res) => {
-    try {
-      const { color } = req.params;
-      const flowers = await Flower.find({ color: color });
-      res.json(flowers);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
