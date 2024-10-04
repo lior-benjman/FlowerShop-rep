@@ -31,7 +31,4 @@ userRouter.put('/orders/:id/cancel', orderController.cancelOrder);
 userRouter.get('/profile/:userId', userController.getUserProfile);
 userRouter.put('/profile/:userId', userController.updateUserProfile);
 
-
-
-
 export default userRouter;

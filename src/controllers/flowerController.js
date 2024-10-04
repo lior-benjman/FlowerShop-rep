@@ -103,21 +103,6 @@ export const flowerController = {
     }
   },
 
-  searchFlowers: async (req, res) => {
-    try {
-      const { query } = req.query;
-      const flowers = await Flower.find({
-        $or: [
-          { name: { $regex: query, $options: 'i' } },
-          { description: { $regex: query, $options: 'i' } }
-        ]
-      });
-      res.json(flowers);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
-
   updateStock: async (req, res) => {
     try {
       const { id } = req.params;

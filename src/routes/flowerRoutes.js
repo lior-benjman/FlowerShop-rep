@@ -10,8 +10,6 @@ flowerRouter.get('/', flowerController.getAll);
 flowerRouter.get('/:id', flowerController.getById);
 flowerRouter.delete('/:id', flowerController.delete);
 
-flowerRouter.get('/search', flowerController.searchFlowers);
-
 flowerRouter.get('/top-selling', flowerController.getTopSellingFlowers);
 flowerRouter.get('/new-arrivals', flowerController.getNewArrivals);
 

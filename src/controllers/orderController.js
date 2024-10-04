@@ -34,15 +34,7 @@ export const orderController = {
       res.status(500).json({ message: error.message });
     }
   },
-  update: async (req, res) => {
-    try {
-      const updatedOrder = await Order.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      if (!updatedOrder) return res.status(404).json({ message: "Order not found" });
-      res.json(updatedOrder);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  },
+
   delete: async (req, res) => {
     try {
       const deletedOrder = await Order.findByIdAndDelete(req.params.id);
