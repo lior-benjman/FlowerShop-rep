@@ -24,64 +24,6 @@ body {
     z-index: -1; 
 }
 
-h1 { font-family: 'Caudex', sans-serif; }
-h2 { font-family: 'Avenir Next Ultra Light', sans-serif; }
-
-header {
-    background-position: top;
-    background-size: cover;
-    text-align: center;
-    color: white;
-}
-
-nav {
-    font-family: 'Avenir Next Ultra Light', sans-serif;
-    width: 100vw;
-    background-size: cover;
-    background-position: top;
-    display: flex;
-    background-color: rgba(0, 0, 0, 0.5);   
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-}
-
-nav .logo {
-    font-size: 32px;
-    color: white;
-    margin-left: 20px;
-}
-
-nav ul {
-    display: flex;
-    list-style: none;
-    padding: 0;
-    font-size: 16px;
-    align-items: center;
-}
-
-nav ul li a {
-    margin-left: 20px;
-    font-size: 18px;
-    color: white;
-    text-decoration: none;
-}
-
-nav .user-actions button {
-    font-family: 'Avenir Next Ultra Light', sans-serif;
-    font-size: 18px;
-    color: white;
-    background-color: transparent;
-    border: 1px solid white;
-    padding: 10px 15px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-nav .user-actions button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
 .opening-list {
     position: absolute;
     display: grid;
@@ -292,13 +234,6 @@ button:active {
     transform: translateY(1px);
 }
 
-
-.dashboard-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
 .view-toggle {
     display: flex;
     justify-content: center;
@@ -318,13 +253,6 @@ button:active {
 .view-btn.active {
     background-color: #3498db;
     color: white;
-}
-
-.dashboard-view {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .inventory-management, .order-management, .add-new-product {

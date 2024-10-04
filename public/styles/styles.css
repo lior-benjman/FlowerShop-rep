@@ -90,63 +90,19 @@ header nav{
     background-color: rgba(0, 0, 0, 0.5);   
 }
 
-.login-button{ 
-    font-size: 18px;
-    color:white;
-    background-color: transparent;
-    font-family: 'AvenirNext-UltraLight', sans-serif;
-    align-items: center;
-    text-align: center;
-    border-bottom-right-radius:5mm;
-    border-bottom-left-radius: 5mm;
-    border-top-right-radius: 5mm;
-    border-top-left-radius: 5mm;
-    padding-left: 12px;
-    padding-right: 16px;
-    padding-top: 7px;
-    padding-bottom: 4px;   
-    cursor: pointer;
-    border: solid rgba(236, 230, 230, 0.339);
-    border-width:0.35mm;
-}
-
-.logout-button {
-    font-size: 16px;
-    color: white;
-    background-color: transparent;
-    font-family: 'AvenirNext-UltraLight', sans-serif;
-    align-items: center;
-    text-align: center;
-    border-radius: 4mm;
-    padding: 5px 12px 3px 10px;
-    cursor: pointer;
-    border: 0.3mm solid rgba(236, 230, 230, 0.339);
-    margin-left: 10px;
-    transition: background-color 0.3s ease;
-}
-
-.login-icon {
-    display: flexbox;
-    align-items: center;
-    margin-right: 9px; 
-    width: 26px;
-    height: 22px;
-}
-
-.login-button:hover{
-    background-color: rgba(255, 255, 255, 0.152);
-}
-
-.logout-button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
 nav {
-    justify-content:space-between;
-    align-items: center;
-    padding: 15px 15px;
+    font-family: 'Avenir Next Ultra Light', sans-serif;
+    width: 100vw;
+    background-size: cover;
+    background-position: top;
+    display: flex;
     background-color: rgba(0, 0, 0, 0.5);   
+    justify-content: space-between;
+    align-items: center;
 }
+
+header nav { padding: 15px 20px; }
+nav { padding: 15px 2px; }
 
 nav ul { 
     font-size: 16px;
@@ -173,7 +129,7 @@ nav .logo {
     
 }
 
-nav .user-actions a{
+nav a{
     font-size: 18px;
     position: relative;
     padding: 0px 50px 40px 30px;
@@ -181,6 +137,62 @@ nav .user-actions a{
     color: white;
     text-decoration: none;
     border-bottom: none;
+}
+
+
+nav .user-actions button {
+    font-family: 'Avenir Next Ultra Light', sans-serif;
+    font-size: 18px;
+    color: white;
+    background-color: transparent;
+    border: 1px solid white;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+nav .user-actions button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+nav a:hover {
+    color: rgb(211, 208, 208);
+}
+
+.login-button, .logout-button{ 
+    font-size: 18px;
+    color:white;
+    background-color: transparent;
+    font-family: 'AvenirNext-UltraLight', sans-serif;
+    align-items: center;
+    text-align: center;
+    border-bottom-right-radius:5mm;
+    border-bottom-left-radius: 5mm;
+    border-top-right-radius: 5mm;
+    border-top-left-radius: 5mm;
+    padding-left: 12px;
+    padding-right: 16px;
+    padding-top: 7px;
+    padding-bottom: 4px;   
+    cursor: pointer;
+    border: solid rgba(236, 230, 230, 0.339);
+    border-width:0.35mm;
+}
+
+.logout-button{
+    background-color: rgba(180, 5, 5, 0.16) !important;
+}
+
+.login-icon {
+    display: flexbox;
+    align-items: center;
+    margin-right: 9px; 
+    width: 20px;
+    height: 16.5px;
+}
+
+.logout-button:hover, .login-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 #myVideo {
@@ -689,6 +701,20 @@ header .banner .banner-content h3 {
 }
 .hidden {
     display: none;
+}
+
+/*Dashboard*/
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.dashboard-view {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /*Modal Styles*/
