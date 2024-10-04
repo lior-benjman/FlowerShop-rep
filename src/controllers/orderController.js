@@ -142,25 +142,6 @@ export const orderController = {
     }
   },
   
-  generateOrderReport: async (req, res) => {
-    try {
-      const { startDate, endDate } = req.query;
-      const orders = await Order.find({
-        createdAt: { $gte: new Date(startDate), $lte: new Date(endDate) }
-      }).populate('items.flower');
-      
-      const report = {
-        totalOrders: orders.length,
-        totalRevenue: orders.reduce((sum, order) => sum + order.totalAmount, 0)
-        //More Data Needed
-      };
-      
-      res.json(report);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
-
   cancelOrder: async (req, res) => {
     try {
       console.log("Reached");

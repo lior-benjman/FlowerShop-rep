@@ -118,26 +118,6 @@ export const flowerController = {
     }
   },
 
-  getFlowersByCategory: async (req, res) => {
-    try {
-      const { category } = req.params;
-      const flowers = await Flower.find({ category: category });
-      res.json(flowers);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
-
-  getFlowersByColor: async (req, res) => {
-    try {
-      const { color } = req.params;
-      const flowers = await Flower.find({ color: color });
-      res.json(flowers);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
-
   updateStock: async (req, res) => {
     try {
       const { id } = req.params;

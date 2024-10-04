@@ -12,7 +12,6 @@ const adminRouter = express.Router();
 
 adminRouter.use(verifyToken, isAdmin);
 
-//adminRouter.get('/dashboard', );
 adminRouter.get('/check', (req, res) => {
     res.json({ isAdmin: true });
 });

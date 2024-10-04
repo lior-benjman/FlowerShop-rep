@@ -11,8 +11,7 @@ userRouter.get('/check', (req, res) => {
     res.json({ loggedIn: true });
 });
 
-userRouter.post('/', userController.create);
-userRouter.get('/', userController.getAll);
+
 userRouter.get('/:id', userController.getById);
 userRouter.put('/:id', userController.update);
 userRouter.delete('/:id', userController.delete);
