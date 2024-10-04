@@ -316,14 +316,15 @@ function displayOrders(orders) {
     const statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
 
     statuses.forEach(status => {
+        
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'order-group';
+        groupDiv.innerHTML = `<h3>${status} Orders</h3>`;
+
+        const orderList = document.createElement('ul');
+        orderList.className = 'order-list';
+    
         if (groupedOrders[status]) {
-            const groupDiv = document.createElement('div');
-            groupDiv.className = 'order-group';
-            groupDiv.innerHTML = `<h3>${status} Orders</h3>`;
-
-            const orderList = document.createElement('ul');
-            orderList.className = 'order-list';
-
             groupedOrders[status].forEach((order, index) => {
                 const li = createOrderListItem(order, status);
                 if (index < 3) {
@@ -334,27 +335,31 @@ function displayOrders(orders) {
                 }
                 orderList.appendChild(li);
             });
-
-            groupDiv.appendChild(orderList);
-
-            if (groupedOrders[status].length > 3) {
-                const showMoreButton = document.createElement('button');
-                showMoreButton.textContent = 'Show More';
-                showMoreButton.className = 'show-more-btn';
-                showMoreButton.onclick = () => toggleOrders(groupDiv);
-                groupDiv.appendChild(showMoreButton);
-            }
-
-            if(status == 'Processing' && groupedOrders[status].length > 0)
-            {
-                mapDiv.style.display = "block";
-                mapDiv.style.height = "400px";
-                mapDiv.style.width = "100%";
-                groupDiv.appendChild(mapDiv);
-            }
-
-            orderGroups.appendChild(groupDiv);
+        } else {
+            const li = document.createElement('li');
+            li.innerHTML = 'Nothing to see here yet...';
+            orderList.appendChild(li);
         }
+        groupDiv.appendChild(orderList);
+
+        if (groupedOrders[status].length > 3) {
+            const showMoreButton = document.createElement('button');
+            showMoreButton.textContent = 'Show More';
+            showMoreButton.className = 'show-more-btn';
+            showMoreButton.onclick = () => toggleOrders(groupDiv);
+            groupDiv.appendChild(showMoreButton);
+        }
+
+        if(status == 'Processing' && groupedOrders[status].length > 0)
+        {
+            mapDiv.style.display = "block";
+            mapDiv.style.height = "400px";
+            mapDiv.style.width = "100%";
+            groupDiv.appendChild(mapDiv);
+        }
+
+        orderGroups.appendChild(groupDiv);
+        
     });
 }
 

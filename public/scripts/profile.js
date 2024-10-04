@@ -148,24 +148,28 @@ function displayOrders(orders) {
     const statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
 
     statuses.forEach(status => {
+        
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'order-group';
+        groupDiv.innerHTML = `<h3>${status} Orders</h3>`;
+        
+        const orderList = document.createElement('ul');
+        orderList.className = 'order-list';
+        
         if (groupedOrders[status]) {
-            const groupDiv = document.createElement('div');
-            groupDiv.className = 'order-group';
-            groupDiv.innerHTML = `<h3>${status} Orders</h3>`;
-
-            const orderList = document.createElement('ul');
-            orderList.className = 'order-list';
-
             groupedOrders[status].forEach((order) => {
                 const li = createOrderListItem(order, status);
                 orderList.appendChild(li);
             });
-
-            groupDiv.appendChild(orderList);
-
-
-            orderGroups.appendChild(groupDiv);
+        } else {
+            const li = document.createElement('li');
+            li.innerHTML = 'Nothing to see here yet...';
+            orderList.appendChild(li);
         }
+
+        groupDiv.appendChild(orderList);
+        orderGroups.appendChild(groupDiv);
+        
     });
 }
 
