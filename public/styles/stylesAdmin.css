@@ -1,3 +1,16 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Avenir Next', sans-serif;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
 .background-container {
     position: fixed;
     top: 0;
@@ -246,67 +259,6 @@ nav .user-actions button:hover {
     color: white;
 }
 
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    border-radius: 8px;
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-}
-
-.modal-header {
-    font-size: 20px;
-    margin-bottom: 10px;
-    font-weight: bold;
-    font-family: 'AvenirNext-UltraLight', sans-serif;
-    padding: 12px 37px;
-    color: rgb(85, 59, 106);
-    cursor: pointer;
-    background-color: #fdf6f0; 
-    border: thin solid rgb(85, 59, 106);
-}
-
-.modal-footer {
-    text-align: right;
-    margin-top: 20px;
-}
-
-.modal-footer button {
-    padding: 10px 20px;
-    margin: 5px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
 .delete-btn {
     background-color: #ff4d4d;
     color: white;
@@ -417,11 +369,5 @@ button:active {
     button {
         width: 100%;
         margin-bottom: 5px;
-    }
-
-    .modal-content {
-        width: 95%;
-        margin: 10% auto;
-        padding: 20px;
     }
 }
