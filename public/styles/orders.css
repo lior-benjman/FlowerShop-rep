@@ -145,23 +145,6 @@ button[onclick^="deleteOrder"]:hover {
     text-transform: uppercase;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-    .order-group li {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .order-group li > span {
-        margin-bottom: 10px;
-    }
-
-    button {
-        width: 100%;
-        margin-bottom: 5px;
-    }
-}
-
 .order-group:nth-child(1) h3 { color: #f39c12; } /* Pending */
 .order-group:nth-child(2) h3 { color: #3498db; } /* Processing */
 .order-group:nth-child(3) h3 { color: #2ecc71; } /* Shipped */
@@ -185,4 +168,63 @@ button[onclick^="deleteOrder"]:hover {
 
 .hidden-order {
     display: none;
+}
+
+#orderControls {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#orderControls h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.filter-options, .sort-options, .date-range {
+    margin-bottom: 15px;
+}
+
+.filter-options label {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+#sortOption, #startDate, #endDate {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.order-group {
+    transition: opacity 0.3s ease-in-out;
+}
+
+@media (max-width: 768px) {
+    .order-group li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .order-group li > span {
+        margin-bottom: 10px;
+    }
+
+    button {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .filter-options label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    #sortOption, #startDate, #endDate {
+        width: 100%;
+        margin-bottom: 10px;
+    }
 }

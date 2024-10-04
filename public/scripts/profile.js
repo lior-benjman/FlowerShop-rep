@@ -41,6 +41,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    document.getElementById('sortOption').addEventListener('change', applyFiltersAndSort);
+    document.querySelectorAll('input[name="status"]').forEach(checkbox => {
+        checkbox.addEventListener('change', applyFiltersAndSort);
+    });
+    document.getElementById('startDate').addEventListener('change', applyFiltersAndSort);
+    document.getElementById('endDate').addEventListener('change', applyFiltersAndSort);
+
 });
 
 const user = JSON.parse(localStorage.getItem('user'));
@@ -106,12 +113,44 @@ function loadOrderHistory() {
             'Authorization': `Bearer ${token}`
         },
         success: function(orders) {
-            displayOrders(orders)
+            allOrders = orders;
+            applyFiltersAndSort();
         },
         error: function(xhr) {
             console.error('Error loading order history:', xhr.responseText);
         }
     });
+}
+
+function applyFiltersAndSort() {
+    const statusFilters = Array.from(document.querySelectorAll('input[name="status"]:checked')).map(input => input.value);
+    const sortOption = document.getElementById('sortOption').value;
+    const startDate = new Date(document.getElementById('startDate').value);
+    const endDate = new Date(document.getElementById('endDate').value);
+
+    let filteredOrders = allOrders.filter(order => {
+        const orderDate = new Date(order.orderDate);
+        return statusFilters.includes(order.status) &&
+               (!startDate.getTime() || orderDate >= startDate) &&
+               (!endDate.getTime() || orderDate <= endDate);
+    });
+
+    filteredOrders.sort((a, b) => {
+        const dateA = new Date(a.orderDate);
+        const dateB = new Date(b.orderDate);
+        switch (sortOption) {
+            case 'dateAsc':
+                return dateA - dateB;
+            case 'dateDesc':
+                return dateB - dateA;
+            case 'priceAsc':
+                return a.totalAmount - b.totalAmount;
+            case 'priceDesc':
+                return b.totalAmount - a.totalAmount;
+        }
+    });
+
+    displayOrders(filteredOrders);
 }
 
 function showEditProfileModal() {
@@ -140,7 +179,7 @@ async function viewOrderDetails(orderId) {
         <h4>Items:</h4>
         <ul>
             ${order.items.map(item => `
-                <li>${item.flower.name} - Quantity: ${item.quantity}</li>
+                <li>${item.flower ? item.flower.name: "Deleted Flower"} - Quantity: ${item.quantity}</li>
             `).join('')}
             <li>Shipping: ${shippingCost}₪</li>
         </ul>
@@ -159,32 +198,36 @@ function displayOrders(orders) {
     const orderGroups = document.getElementById('orderGroups');
     orderGroups.innerHTML = '';
 
-    const groupedOrders = groupOrdersByStatus(orders);
     const statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
 
     statuses.forEach(status => {
-        
         const groupDiv = document.createElement('div');
         groupDiv.className = 'order-group';
         groupDiv.innerHTML = `<h3>${status} Orders</h3>`;
-        
+
         const orderList = document.createElement('ul');
         orderList.className = 'order-list';
+    
+        const statusOrders = orders.filter(order => order.status === status);
         
-        if (groupedOrders[status]) {
-            groupedOrders[status].forEach((order) => {
+        if (statusOrders.length > 0) {
+            statusOrders.forEach((order, index) => {
                 const li = createOrderListItem(order, status);
+                if (index < 3) {
+                    li.style.display = 'block';
+                } else {
+                    li.style.display = 'none';
+                    li.classList.add('hidden-order');
+                }
                 orderList.appendChild(li);
             });
+            groupDiv.style.display = 'block';
         } else {
-            const li = document.createElement('li');
-            li.innerHTML = 'Nothing to see here yet...';
-            orderList.appendChild(li);
+            groupDiv.style.display = 'none';
         }
 
         groupDiv.appendChild(orderList);
         orderGroups.appendChild(groupDiv);
-        
     });
 }
 

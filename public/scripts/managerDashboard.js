@@ -11,7 +11,15 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('inventoryViewBtn').addEventListener('click', () => toggleView('inventoryView'));
     document.getElementById('ordersViewBtn').addEventListener('click', () => toggleView('ordersView'));
     document.getElementById('statsViewBtn').addEventListener('click', () => toggleView('statsView'));
-    
+
+    document.getElementById('sortOption').addEventListener('change', applyFiltersAndSort);
+    document.querySelectorAll('input[name="status"]').forEach(checkbox => {
+        checkbox.addEventListener('change', applyFiltersAndSort);
+    });
+    document.getElementById('startDate').addEventListener('change', applyFiltersAndSort);
+    document.getElementById('endDate').addEventListener('change', applyFiltersAndSort);
+
+        
 });
 
 const token = localStorage.getItem('token');
@@ -302,9 +310,45 @@ async function loadOrders() {
                 'Authorization': `Bearer ${token}`
             }
         });
-        displayOrders(orders);
+        allOrders = orders;
+        applyFiltersAndSort();
     } catch (error) {
         console.error('Error loading orders:', error);
+    }
+}
+
+function applyFiltersAndSort() {
+    const statusFilters = Array.from(document.querySelectorAll('input[name="status"]:checked')).map(input => input.value);
+    const sortOption = document.getElementById('sortOption').value;
+    const startDate = new Date(document.getElementById('startDate').value);
+    const endDate = new Date(document.getElementById('endDate').value);
+
+    let filteredOrders = allOrders.filter(order => {
+        const orderDate = new Date(order.orderDate);
+        return statusFilters.includes(order.status) &&
+               (!startDate.getTime() || orderDate >= startDate) &&
+               (!endDate.getTime() || orderDate <= endDate);
+    });
+
+    filteredOrders.sort((a, b) => {
+        const dateA = new Date(a.orderDate);
+        const dateB = new Date(b.orderDate);
+        switch (sortOption) {
+            case 'dateAsc':
+                return dateA - dateB;
+            case 'dateDesc':
+                return dateB - dateA;
+            case 'priceAsc':
+                return a.totalAmount - b.totalAmount;
+            case 'priceDesc':
+                return b.totalAmount - a.totalAmount;
+        }
+    });
+
+    displayOrders(filteredOrders);
+
+    if (typeof window.reloadMap === 'function') {
+        window.reloadMap(filteredOrders.filter(order => order.status === 'Processing'));
     }
 }
 
@@ -312,11 +356,9 @@ function displayOrders(orders) {
     const orderGroups = document.getElementById('orderGroups');
     orderGroups.innerHTML = '';
 
-    const groupedOrders = groupOrdersByStatus(orders);
     const statuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
 
     statuses.forEach(status => {
-        
         const groupDiv = document.createElement('div');
         groupDiv.className = 'order-group';
         groupDiv.innerHTML = `<h3>${status} Orders</h3>`;
@@ -324,8 +366,10 @@ function displayOrders(orders) {
         const orderList = document.createElement('ul');
         orderList.className = 'order-list';
     
-        if (groupedOrders[status]) {
-            groupedOrders[status].forEach((order, index) => {
+        const statusOrders = orders.filter(order => order.status === status);
+        
+        if (statusOrders.length > 0) {
+            statusOrders.forEach((order, index) => {
                 const li = createOrderListItem(order, status);
                 if (index < 3) {
                     li.style.display = 'block';
@@ -335,14 +379,14 @@ function displayOrders(orders) {
                 }
                 orderList.appendChild(li);
             });
+            groupDiv.style.display = 'block';
         } else {
-            const li = document.createElement('li');
-            li.innerHTML = 'Nothing to see here yet...';
-            orderList.appendChild(li);
+            groupDiv.style.display = 'none';
         }
+
         groupDiv.appendChild(orderList);
 
-        if (groupedOrders[status].length > 3) {
+        if (statusOrders.length > 3) {
             const showMoreButton = document.createElement('button');
             showMoreButton.textContent = 'Show More';
             showMoreButton.className = 'show-more-btn';
@@ -350,16 +394,16 @@ function displayOrders(orders) {
             groupDiv.appendChild(showMoreButton);
         }
 
-        if(status == 'Processing' && groupedOrders[status].length > 0)
-        {
-            mapDiv.style.display = "block";
-            mapDiv.style.height = "400px";
-            mapDiv.style.width = "100%";
-            groupDiv.appendChild(mapDiv);
+        if(statusOrders){
+            if(status == 'Processing' && statusOrders.length > 0){
+                    mapDiv.style.display = "block";
+                    mapDiv.style.height = "400px";
+                    mapDiv.style.width = "100%";
+                    groupDiv.appendChild(mapDiv);
+            }
         }
 
         orderGroups.appendChild(groupDiv);
-        
     });
 }
 
@@ -433,7 +477,7 @@ async function viewOrderDetails(orderId) {
         <h4>Items:</h4>
         <ul>
             ${order.items.map(item => `
-                <li>${item.flower.name} - Quantity: ${item.quantity}</li>
+                <li>${item.flower ? item.flower.name: "Deleted Flower"} - Quantity: ${item.quantity}</li>
             `).join('')}
             <li>Shipping: ${shippingCost}₪</li>
         </ul>

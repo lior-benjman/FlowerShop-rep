@@ -18,7 +18,7 @@ function loadMapsAPI() {
     });
 }
 
-function reloadMap() {
+function reloadMap(processingOrders) {
     if (map) {
         map.setCenter(null);
         map = null;
@@ -29,6 +29,7 @@ function reloadMap() {
         existingScript.remove();
     }
 
+    window.processingOrders = processingOrders;
     loadMapsAPI();
 }
 

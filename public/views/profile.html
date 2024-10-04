@@ -46,6 +46,30 @@
         <div id="ordersView" class="dashboard-view">
             <section class="order-management">
                 <h2>Orders History</h2>
+                <div id="orderControls">
+                    <div class="filter-options">
+                      <h4>Filter by Status:</h4>
+                      <label><input type="checkbox" name="status" value="Pending" checked> Pending</label>
+                      <label><input type="checkbox" name="status" value="Processing" checked> Processing</label>
+                      <label><input type="checkbox" name="status" value="Shipped" checked> Shipped</label>
+                      <label><input type="checkbox" name="status" value="Delivered" checked> Delivered</label>
+                      <label><input type="checkbox" name="status" value="Cancelled" checked> Cancelled</label>
+                    </div>
+                    <div class="sort-options">
+                      <h4>Sort by:</h4>
+                      <select id="sortOption">
+                        <option value="dateAsc">Date (Oldest First)</option>
+                        <option value="dateDesc">Date (Newest First)</option>
+                        <option value="priceAsc">Price (Low to High)</option>
+                        <option value="priceDesc">Price (High to Low)</option>
+                      </select>
+                    </div>
+                    <div class="date-range">
+                      <h4>Date Range:</h4>
+                      <input type="date" id="startDate">
+                      <input type="date" id="endDate">
+                    </div>
+                </div>
                 <div id="orderGroups"></div>
             </section>         
         </div>
