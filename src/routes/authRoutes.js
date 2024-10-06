@@ -10,5 +10,6 @@ authRouter.post('/signup', userController.signup);
 authRouter.get('/check-token', verifyToken, (req, res) => {
     res.status(200).json({ valid: true });
 });
+authRouter.put('/:id/change-password', userController.changePassword);
 
 export default authRouter;

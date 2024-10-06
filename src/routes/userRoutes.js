@@ -23,7 +23,6 @@ userRouter.post('/cart/clear', userController.clearCart);
 userRouter.get('/cart/:userId', userController.getCart);
 userRouter.post('/cart/create-from-cart/:userId', orderController.createFromCart);
 
-userRouter.put('/:id/change-password', userController.changePassword);
 
 userRouter.get('/:userId/orders', userController.getUserOrders);
 userRouter.put('/orders/:id/cancel', orderController.cancelOrder);

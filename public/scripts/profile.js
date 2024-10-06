@@ -356,7 +356,7 @@ function changePassword() {
     }
 
     $.ajax({
-        url: `/api/users/${user.id}/change-password`,
+        url: `/api/auth/${user.id}/change-password`,
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${token}`
