@@ -345,6 +345,11 @@ function changePassword() {
     const newPassword = $('#newPassword').val();
     const confirmPassword = $('#confirmPassword').val();
 
+    if (!isValidPassword(newPassword)) {
+        alert('Password must be at least 8 characters long and contain at least one number and one letter.');
+        return;
+    }
+
     if (newPassword !== confirmPassword) {
         alert('New passwords do not match.');
         return;
@@ -391,4 +396,10 @@ function deleteAccount() {
             }
         }
     });
+}
+
+function isValidPassword(password) {
+    return password.length >= 8 && 
+           /[A-Za-z]/.test(password) && 
+           /\d/.test(password);
 }

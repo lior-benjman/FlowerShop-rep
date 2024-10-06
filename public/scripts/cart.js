@@ -29,9 +29,27 @@ window.onclick = function(event) {
 document.getElementById("checkout-form").onsubmit = async function(e) {
     e.preventDefault();
     const shippingAddress  = document.getElementById('address').value;
+    const cardNumber = document.getElementById('card-number').value;
+    const expiry = document.getElementById('expiry').value;
+    const cvv = document.getElementById('cvv').value;
     
     if (!shippingAddress .trim()) {
         alert("Please enter a valid shipping address.");
+        return;
+    }
+
+    if (!isValidCardNumber(cardNumber)) {
+        alert("Please enter a valid 16-digit card number.");
+        return;
+    }
+
+    if (!isValidExpiry(expiry)) {
+        alert("Please enter a valid expiry date in MM/YY format.");
+        return;
+    }
+
+    if (!isValidCVV(cvv)) {
+        alert("Please enter a valid CVV (3 or 4 digits).");
         return;
     }
 
@@ -249,6 +267,16 @@ async function updateCartCount() {
     }
 }
 
-document.getElementById('checkout-button').addEventListener('click', function() {
 
-});
+
+function isValidCardNumber(cardNumber) {
+    return /^\d{16}$/.test(cardNumber);
+}
+
+function isValidExpiry(expiry) {
+    return /^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry);
+}
+
+function isValidCVV(cvv) {
+    return /^\d{3,4}$/.test(cvv);
+}
