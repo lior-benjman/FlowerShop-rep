@@ -560,7 +560,7 @@ async function deleteOrder(orderId) {
 async function loadInventory() {
     try {
         const flowersData = await $.ajax({
-            url: '/api/flowers',
+            url: '/api/flowers?viewAll=true',
             method: 'GET'
         });
         const flowers = flowersData.flowers;
@@ -573,7 +573,6 @@ async function loadInventory() {
 function displayInventory(flowers) {
     const inventoryTable = document.querySelector('.inventory-table tbody');
     inventoryTable.innerHTML = '';
-
     flowers.forEach(flower => {
         const row = `
             <tr>

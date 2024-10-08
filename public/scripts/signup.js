@@ -11,8 +11,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
 
+            if (!isValidEmail(email)) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+
             if (password !== confirmPassword) {
                 alert('Passwords do not match!');
+                return;
+            }
+
+            if (!isValidPassword(password)) {
+                alert('Password must be at least 8 characters long and contain at least one number and one letter.');
                 return;
             }
 
@@ -32,3 +42,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+function isValidPassword(password) {
+    return password.length >= 8 && 
+           /[A-Za-z]/.test(password) && 
+           /\d/.test(password);
+}
+
+function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
