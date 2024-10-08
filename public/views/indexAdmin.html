@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="../styles/styles.css">
     <link rel="stylesheet" href="../styles/stylesAdmin.css">
     <link rel="stylesheet" href="../styles/orders.css">
-
 </head>
 <body>
     <header>
         <div class="banner">
-                <video  autoplay muted loop id="myVideo">
-                <source src="../videos/banner.mp4" type="video/mp4"></video>
+            <video autoplay muted loop id="myVideo">
+                <source src="../videos/banner.mp4" type="video/mp4">
+            </video>
             <nav>
                 <div class="logo">C</div>
                 <ul>
@@ -31,52 +31,11 @@
         </div>
     </header>
     
-
     <div class="dashboard-container">
         <div class="view-toggle">
             <button id="inventoryViewBtn" class="view-btn active">Inventory Management</button>
             <button id="ordersViewBtn" class="view-btn">Order Management</button>
             <button id="statsViewBtn" class="view-btn">Statistics</button>
-        </div>
-
-        <div id="ordersView" class="dashboard-view" style="display: none;">
-            <section class="order-management">
-                <h2>Order Management</h2>
-                <div id="orderControls">
-                    <div class="filter-options">
-                      <h4>Filter by Status:</h4>
-                      <label><input type="checkbox" name="status" value="Pending" checked> Pending</label>
-                      <label><input type="checkbox" name="status" value="Processing" checked> Processing</label>
-                      <label><input type="checkbox" name="status" value="Shipped" checked> Shipped</label>
-                      <label><input type="checkbox" name="status" value="Delivered" checked> Delivered</label>
-                      <label><input type="checkbox" name="status" value="Cancelled" checked> Cancelled</label>
-                    </div>
-                    <div class="sort-options">
-                      <h4>Sort by:</h4>
-                      <select id="sortOption">
-                        <option value="dateAsc">Date (Oldest First)</option>
-                        <option value="dateDesc">Date (Newest First)</option>
-                        <option value="priceAsc">Price (Low to High)</option>
-                        <option value="priceDesc">Price (High to Low)</option>
-                      </select>
-                    </div>
-                    <div class="date-range">
-                      <h4>Date Range:</h4>
-                      <input type="date" id="startDate">
-                      <input type="date" id="endDate">
-                    </div>
-                </div>
-                <div id="orderGroups"></div>
-            </section>
-            
-            <div id="orderDetailsModal" class="modal" style="display: none;">
-                <div class="modal-content">
-                    <span class="close" onclick="closeOrderDetailsModal()">&times;</span>
-                    <h2>Order Details</h2>
-                    <div id="orderDetailsContent"></div>
-                </div>
-            </div>
-        
         </div>
 
         <div id="inventoryView" class="dashboard-view">
@@ -100,25 +59,25 @@
                         <h2>Add New Product</h2>
                         <button id="addProductBtn">Add Product</button>
                     
-                        <form id="addFlowerForm" style="display: none;">
+                        <form id="addFlowerForm">
                             <label for="name">Name:</label>
                             <input type="text" id="name" name="name" required><br><br>
-                    
+
                             <label for="price">Price:</label>
                             <input type="number" id="price" name="price" step="0.01" required><br><br>
-                    
+
                             <label for="description">Description:</label>
                             <textarea id="description" name="description" required></textarea><br><br>
                             
                             <label for="category">Category:</label>
                             <input type="text" id="category" name="category" required><br><br>
-                    
+
                             <label for="color">Color:</label>
                             <input type="text" id="color" name="color" required><br><br>
-                    
+
                             <label for="imageUrl">Image URL:</label>
                             <input type="text" id="imageUrl" name="imageUrl" required><br><br>
-                    
+
                             <div class="form-buttons">
                                 <button type="submit">Add Product</button>
                                 <button type="button" id="cancelAddProduct">Cancel</button>
@@ -127,70 +86,45 @@
                     </div>
                 </div>
             </section>
-
-            <div id="editFlowerModal" class="modal" style="display: none;">
-                <div class="modal-content">
-                    <span class="close" onclick="closeEditModal()">&times;</span>
-                    <h2>Edit Flower</h2>
-                    <form id="editFlowerForm" onsubmit="updateFlower(event)">
-                        <input type="hidden" id="editFlowerId" name="id">
-                        
-                        <label for="editName">Name:</label>
-                        <input type="text" id="editName" name="name" required><br><br>
-                
-                        <label for="editPrice">Price:</label>
-                        <input type="number" id="editPrice" name="price" step="0.01" required><br><br>
-                
-                        <label for="editDescription">Description:</label>
-                        <textarea id="editDescription" name="description" required></textarea><br><br>
-                        
-                        <label for="editCategory">Category:</label>
-                        <input type="text" id="editCategory" name="category" required><br><br>
-                
-                        <label for="editColor">Color:</label>
-                        <input type="text" id="editColor" name="color" required><br><br>
-                
-                        <label for="editImageUrl">Image URL:</label>
-                        <input type="text" id="editImageUrl" name="imageUrl" required><br><br>
-                
-                        <button type="submit">Update Flower</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div id="statsView" class="dashboard-view" style="display: none;">
-            <section class="statistics">
-                <h2>Statistics</h2>
-                <div class="chart-container">
-                    <div class="chart-item">
-                        <h3>Orders and Revenue by Month</h3>
-                        <div id="ordersRevenueChart"></div>
-                    </div>
-                    <div class="chart-item">
-                        <h3>Revenue by Item</h3>
-                        <div id="revenueByItemChart"></div>
-                    </div>
-                    <div class="chart-item">
-                        <h3>Top Selling Flowers</h3>
-                        <div id="topSellingFlowersChart"></div>
-                    </div>
-                </div>
-            </section>
         </div>
     </div>
-    
-    <div id="map" class="order-map" style="display: none;"></div>
-    
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="../scripts/header.js" defer></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="../scripts/managerDashboard.js" defer></script>
+    <script>
+        $(document).ready(function() {
+            $('#addFlowerForm').on('submit', function(event) {
+                event.preventDefault();
+                
+                // Get form data
+                const flowerData = {
+                    name: $('#name').val(),
+                    price: $('#price').val(),
+                    description: $('#description').val(),
+                    category: $('#category').val(),
+                    color: $('#color').val(),
+                    imageUrl: $('#imageUrl').val(),
+                };
 
-    <script src="../scripts/ordersMap.js"></script>
-    <script src="../scripts/loadMapsApi.js"></script>
+                // Post the flower data to the backend
+                $.ajax({
+                    url: '/api/admin/add-flower',  // Backend route to handle adding flower and posting to Facebook
+                    type: 'POST',
+                    data: JSON.stringify(flowerData),
+                    contentType: 'application/json',
+                    success: function(response) {
+                        alert('Flower added and posted to Facebook!');
+                    },
+                    error: function(error) {
+                        console.error('Error:', error);
+                        alert('There was an error adding the flower.');
+                    }
+                });
+            });
+        });
+    </script>
 
-    </body>
 </body>
-
 </html>
