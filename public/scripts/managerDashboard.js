@@ -724,3 +724,25 @@ async function addNewProduct(event) {
         alert('Failed to add product. Please try again.');
     }
 }
+async function postToFacebook(flowerName, flowerDescription, flowerImageUrl) {
+    const pageAccessToken = facebookPageAccessToken;  // Load from config
+
+    const postUrl = `https://graph.facebook.com/v12.0/428875076980152/feed?access_token=${pageAccessToken}`;
+
+    const response = await fetch(postUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            message: `${flowerName}: ${flowerDescription}`,
+            link: flowerImageUrl
+        }),
+    });
+
+    if (response.ok) {
+        console.log('Flower posted successfully to Facebook!');
+    } else {
+        console.error('Error posting to Facebook:', await response.text());
+    }
+}

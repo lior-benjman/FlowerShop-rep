@@ -93,38 +93,6 @@
     <script src="../scripts/header.js" defer></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="../scripts/managerDashboard.js" defer></script>
-    <script>
-        $(document).ready(function() {
-            $('#addFlowerForm').on('submit', function(event) {
-                event.preventDefault();
-                
-                // Get form data
-                const flowerData = {
-                    name: $('#name').val(),
-                    price: $('#price').val(),
-                    description: $('#description').val(),
-                    category: $('#category').val(),
-                    color: $('#color').val(),
-                    imageUrl: $('#imageUrl').val(),
-                };
-
-                // Post the flower data to the backend
-                $.ajax({
-                    url: '/api/admin/add-flower',  // Backend route to handle adding flower and posting to Facebook
-                    type: 'POST',
-                    data: JSON.stringify(flowerData),
-                    contentType: 'application/json',
-                    success: function(response) {
-                        alert('Flower added and posted to Facebook!');
-                    },
-                    error: function(error) {
-                        console.error('Error:', error);
-                        alert('There was an error adding the flower.');
-                    }
-                });
-            });
-        });
-    </script>
 
 </body>
 </html>
