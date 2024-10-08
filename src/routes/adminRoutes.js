@@ -6,6 +6,7 @@ import { config } from "../config/config.js";
 
 const { mapsApiKey } = config;
 
+const { facebookPageAccessToken } = config;
 
 const adminRouter = express.Router();
 
