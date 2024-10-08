@@ -1,10 +1,15 @@
 import Flower from "../schema/models/Flower.js";
+import { config } from "../config/config.js";
+
+const { facebookPageAccessToken } = config;
 
 export const flowerController = {
   create: async (req, res) => {
     try {
       const newFlower = new Flower(req.body);
       await newFlower.save();
+      const { name, description, imageUrl } = req.body; 
+      await postToFacebook(name, description, imageUrl);
       res.status(201).json(newFlower);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -148,3 +153,25 @@ export const flowerController = {
   },
 
 };
+
+async function postToFacebook(flowerName, flowerDescription, flowerImageUrl) {
+
+  const postUrl = `https://graph.facebook.com/v12.0/428875076980152/feed?access_token=${facebookPageAccessToken}`;
+
+  const response = await fetch(postUrl, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          message: `${flowerName}: ${flowerDescription}`,
+          link: flowerImageUrl
+      }),
+  });
+
+  if (response.ok) {
+      console.log('Flower posted successfully to Facebook!');
+  } else {
+      console.error('Error posting to Facebook:', await response.text());
+  }
+}
