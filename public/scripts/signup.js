@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     alert('Registration successful!');
                     window.location.href = 'login.html';
                 },
-                error: function(jqXHR) {
-                    alert(jqXHR.responseJSON.message || 'Registration failed!');
+                error: function(error) {
+                    alert(error.responseJSON?.message || 'Registration failed!');
                 }
             });
         });

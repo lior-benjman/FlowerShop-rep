@@ -56,8 +56,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }).then(function(data) {
             return data.itemCount || 0;
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.error('Error fetching cart:', textStatus, errorThrown);
+        }).catch(function(error) {
+            console.error('Error fetching cart:', error);
             return 0;
         });
     }
@@ -72,8 +72,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }).then(function() {
             return true;
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.error('Error checking token validity:', textStatus, errorThrown);
+        }).catch(function(error) {
+            console.error('Error checking token validity:', error);
             return false;
         });
     }
@@ -88,8 +88,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }).then(function(data) {
             return data.isAdmin;
-        }).catch(function(jqXHR) {
-            console.error('Error checking admin status:', jqXHR.responseText);
+        }).catch(function(error) {
+            console.error('Error checking admin status:', error);
             return false;
         });
     }
