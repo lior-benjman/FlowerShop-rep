@@ -7,35 +7,31 @@ document.addEventListener('DOMContentLoaded', function() {
     loadUserProfile();
     loadOrderHistory();
 
-    $('#editProfileBtn').on('click', function() {
-        showEditProfileModal();
+    document.getElementById('editProfileBtn').addEventListener('click', showEditProfileModal);
+
+    document.querySelector('.close').addEventListener('click', function() {
+        document.getElementById('editProfileModal').style.display = 'none';
     });
 
-    $('.close').on('click', function() {
-        $('#editProfileModal').hide();
-    });
-
-    $(window).on('click', function(event) {
-        if (event.target == $('#editProfileModal')[0]) {
-            $('#editProfileModal').hide();
+    window.addEventListener('click', function(event) {
+        if (event.target == document.getElementById('editProfileModal')) {
+            document.getElementById('editProfileModal').style.display = 'none';
         }
     });
 
-    $('#editProfileForm').on('submit', function(e) {
+    document.getElementById('editProfileForm').addEventListener('submit', function(e) {
         e.preventDefault();
         updateProfile();
     });
 
-    $('#changePasswordBtn').on('click', function() {
-        showChangePasswordModal();
-    });
+    document.getElementById('changePasswordBtn').addEventListener('click', showChangePasswordModal);
 
-    $('#changePasswordForm').on('submit', function(e) {
+    document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
         e.preventDefault();
         changePassword();
     });
 
-    $('#deleteAccountBtn').on('click', function() {
+    document.getElementById('deleteAccountBtn').addEventListener('click', function() {
         if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
             deleteAccount();
         }
@@ -154,24 +150,23 @@ function applyFiltersAndSort() {
 }
 
 function showEditProfileModal() {
-    $('#editProfileModal').show();
+    document.getElementById('editProfileModal').style.display = 'block';
 }
 
 function closeOrderDetailsModal() {
     document.getElementById('orderDetailsModal').style.display = 'none';
 }
 
-async function viewOrderDetails(orderId) {
-    try {
-        const order = await $.ajax({
-            url: `/api/orders/${orderId}`,
-            method: 'GET'
-        });
-        
+function viewOrderDetails(orderId) {
+    $.ajax({
+        url: `/api/orders/${orderId}`,
+        method: 'GET'
+    })
+    .then(function(order) {
         let shippingCost = order.totalAmount > 150 ? 0 : 10;
         
-        const modalContent = $('#orderDetailsContent');
-        modalContent.html(`
+        const modalContent = document.getElementById('orderDetailsContent');
+        modalContent.innerHTML = `
         <p><strong>Order ID:</strong> <span>${order._id}</span></p>
         <p><strong>Customer:</strong> <span>${order.user.username}</span></p>
         <p><strong>Order Date:</strong> <span>${new Date(order.orderDate).toLocaleString()}</span></p>
@@ -185,13 +180,14 @@ async function viewOrderDetails(orderId) {
         </ul>
         <p><strong>Shipping Address:</strong> <span>${order.shippingAddress}</span></p>
         <p class="total-amount"><strong>Total Amount:</strong> <span>${(order.totalAmount+shippingCost).toFixed(2)}₪</span></p>
-        `);
+        `;
         
-        $('#orderDetailsModal').show();
-    } catch (error) {
+        document.getElementById('orderDetailsModal').style.display = 'block';
+    })
+    .catch(function(error) {
         console.error('Error fetching order details:', error);
         alert('Failed to load order details. Please try again.');
-    }
+    });
 }
 
 function displayOrders(orders) {
@@ -310,10 +306,10 @@ function updateProfile() {
     const user = JSON.parse(localStorage.getItem('user'));
     console.log(user.id);
     const updatedData = {
-        firstName: $('#firstName').val(),
-        lastName: $('#lastName').val(),
-        email: $('#email').val(),
-        address: $('#address').val()
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        email: document.getElementById('email').value,
+        address: document.getElementById('address').value
     };
     console.log(updatedData);
     $.ajax({
@@ -323,27 +319,27 @@ function updateProfile() {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         data: JSON.stringify(updatedData),
-        contentType: 'application/json',
-        success: function(response) {
-            alert('Profile updated successfully!');
-            $('#editProfileModal').hide();
-            loadUserProfile();
-        },
-        error: function(xhr) {
-            console.error('Error updating profile:', xhr.responseText);
-            alert('Failed to update profile. Please try again.');
-        }
+        contentType: 'application/json'
+    })
+    .then(function(response) {
+        alert('Profile updated successfully!');
+        document.getElementById('editProfileModal').style.display = 'none';
+        loadUserProfile();
+    })
+    .catch(function(error) {
+        console.error('Error updating profile:', error);
+        alert('Failed to update profile. Please try again.');
     });
 }
 
 function showChangePasswordModal() {
-    $('#changePasswordModal').show();
+    document.getElementById('changePasswordModal').style.display = 'block';
 }
 
 function changePassword() {
-    const currentPassword = $('#currentPassword').val();
-    const newPassword = $('#newPassword').val();
-    const confirmPassword = $('#confirmPassword').val();
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
 
     if (!isValidPassword(newPassword)) {
         alert('Password must be at least 8 characters long and contain at least one number and one letter.');
@@ -362,15 +358,15 @@ function changePassword() {
             'Authorization': `Bearer ${token}`
         },
         data: JSON.stringify({ currentPassword, newPassword }),
-        contentType: 'application/json',
-        success: function(response) {
-            alert('Password changed successfully!');
-            $('#changePasswordModal').hide();
-        },
-        error: function(xhr) {
-            console.error('Error changing password:', xhr.responseText);
-            alert('Failed to change password. Please try again.');
-        }
+        contentType: 'application/json'
+    })
+    .then(function(response) {
+        alert('Password changed successfully!');
+        document.getElementById('changePasswordModal').style.display = 'none';
+    })
+    .catch(function(error) {
+        console.error('Error changing password:', error);
+        alert('Failed to change password. Please try again.');
     });
 }
 

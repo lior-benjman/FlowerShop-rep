@@ -461,35 +461,34 @@ function getNextStatus(currentStatus) {
     return currentIndex < statusFlow.length - 1 ? statusFlow[currentIndex + 1] : currentStatus;
 }
 
-async function viewOrderDetails(orderId) {
-    try {
-        const order = await $.ajax({
-            url: `/api/orders/${orderId}`,
-            method: 'GET'
-        });
+function viewOrderDetails(orderId) {
+    $.ajax({
+        url: `/api/orders/${orderId}`,
+        method: 'GET'
+    }).then(function(order) {
         let shippingCost = order.totalAmount > 150 ? 0 : 10;
-        const modalContent = $('#orderDetailsContent');
-        modalContent.html(`
-        <p><strong>Order ID:</strong> <span>${order._id}</span></p>
-        <p><strong>Customer:</strong> <span>${order.user.username}</span></p>
-        <p><strong>Order Date:</strong> <span>${new Date(order.orderDate).toLocaleString()}</span></p>
-        <p><strong>Status:</strong> <span class="status-badge status-${order.status.toLowerCase()}">${order.status}</span></p>
-        <h4>Items:</h4>
-        <ul>
-            ${order.items.map(item => `
-                <li>${item.flower ? item.flower.name: "Deleted Flower"} - Quantity: ${item.quantity}</li>
-            `).join('')}
-            <li>Shipping: ${shippingCost}₪</li>
-        </ul>
-        <p><strong>Shipping Address:</strong> <span>${order.shippingAddress}</span></p>
-        <p class="total-amount"><strong>Total Amount:</strong> <span>${(order.totalAmount+shippingCost).toFixed(2)}₪</span></p>
-        `);
+        const modalContent = document.getElementById('orderDetailsContent');
+        modalContent.innerHTML = `
+            <p><strong>Order ID:</strong> <span>${order._id}</span></p>
+            <p><strong>Customer:</strong> <span>${order.user.username}</span></p>
+            <p><strong>Order Date:</strong> <span>${new Date(order.orderDate).toLocaleString()}</span></p>
+            <p><strong>Status:</strong> <span class="status-badge status-${order.status.toLowerCase()}">${order.status}</span></p>
+            <h4>Items:</h4>
+            <ul>
+                ${order.items.map(item => `
+                    <li>${item.flower ? item.flower.name : "Deleted Flower"} - Quantity: ${item.quantity}</li>
+                `).join('')}
+                <li>Shipping: ${shippingCost}₪</li>
+            </ul>
+            <p><strong>Shipping Address:</strong> <span>${order.shippingAddress}</span></p>
+            <p class="total-amount"><strong>Total Amount:</strong> <span>${(order.totalAmount+shippingCost).toFixed(2)}₪</span></p>
+        `;
         
-        $('#orderDetailsModal').show();
-    } catch (error) {
+        document.getElementById('orderDetailsModal').style.display = 'block';
+    }).catch(function(error) {
         console.error('Error fetching order details:', error);
         alert('Failed to load order details. Please try again.');
-    }
+    });
 }
 
 function closeOrderDetailsModal() {
@@ -630,26 +629,24 @@ async function deleteFlower(flowerId) {
     }
 }
 
-async function openEditFlower(flowerId) {
-    try {
-        const flower = await $.ajax({
-            url: `/api/flowers/${flowerId}`,
-            method: 'GET'
-        });
+function openEditFlower(flowerId) {
+    $.ajax({
+        url: `/api/flowers/${flowerId}`,
+        method: 'GET'
+    }).then(function(flower) {
+        document.getElementById('editFlowerId').value = flower._id;
+        document.getElementById('editName').value = flower.name;
+        document.getElementById('editPrice').value = flower.price;
+        document.getElementById('editDescription').value = flower.description;
+        document.getElementById('editCategory').value = flower.category;
+        document.getElementById('editColor').value = flower.color;
+        document.getElementById('editImageUrl').value = flower.imageUrl;
         
-        $('#editFlowerId').val(flower._id);
-        $('#editName').val(flower.name);
-        $('#editPrice').val(flower.price);
-        $('#editDescription').val(flower.description);
-        $('#editCategory').val(flower.category);
-        $('#editColor').val(flower.color);
-        $('#editImageUrl').val(flower.imageUrl);
-        
-        $('#editFlowerModal').show();
-    } catch (error) {
+        document.getElementById('editFlowerModal').style.display = 'block';
+    }).catch(function(error) {
         console.error('Error fetching flower details:', error);
         alert('Failed to load flower details. Please try again.');
-    }
+    });
 }
 
 async function updateFlower(event) {

@@ -100,9 +100,9 @@ async function fetchUserDetails() {
             }
         });
         
-        $('#name').val(userData.firstName + " " + userData.lastName);
-        $('#email').val(userData.email);
-        $('#address').val(userData.address || '');
+        document.getElementById('name').value = userData.firstName + " " + userData.lastName;
+        document.getElementById('email').value = userData.email;
+        document.getElementById('address').value = userData.address || '';
 
     } catch (error) {
         console.error('Error fetching user details:', error);
@@ -256,10 +256,10 @@ async function updateCartCount() {
 
         const cartCount = cartData.items.reduce((total, item) => total + item.quantity, 0);
 
-        const cartCountElement = $('#cart-count');
-        if (cartCountElement.length) {
-            cartCountElement.text(`Cart (${cartCount})`);
-            cartCountElement.css('display', cartCount > 0 ? 'inline' : 'none');
+        const cartCountElement = document.getElementById('cart-count');
+        if (cartCountElement) {
+            cartCountElement.textContent = `Cart (${cartCount})`;
+            cartCountElement.style.display = cartCount > 0 ? 'inline' : 'none';
         }
     
     } catch (error) {

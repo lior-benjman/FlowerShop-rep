@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         window.location.href = 'shop.html';
                     }
                 },
-                error: function(jqXHR) {
-                    alert(jqXHR.responseJSON.message || 'Login failed!');
+                error: function(error) {
+                    alert(error.responseJSON?.message || 'Login failed!');
                 }
             });
         });

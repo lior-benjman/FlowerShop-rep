@@ -12,8 +12,8 @@ function loadMapsAPI() {
             script.defer = true;
             document.body.appendChild(script);
         },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error('Error loading Maps API:', textStatus, errorThrown);
+        error: function(error) {
+            console.error('Error loading Maps API:', error);
         }
     });
 }
