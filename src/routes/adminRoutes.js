@@ -6,7 +6,6 @@ import { config } from "../config/config.js";
 
 const { mapsApiKey } = config;
 
-
 const adminRouter = express.Router();
 
 
@@ -38,7 +37,5 @@ adminRouter.delete('/flowers/:id', flowerController.delete);
 adminRouter.get('/statistics/orders-revenue', orderController.getOrdersRevenueStats);
 adminRouter.get('/statistics/revenue-by-item', orderController.getRevenueByItemStats);
 adminRouter.get('/statistics/top-selling-flowers', orderController.getTopSellingFlowers);
-
-
 
 export default adminRouter;
