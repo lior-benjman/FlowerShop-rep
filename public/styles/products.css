@@ -98,6 +98,11 @@
     transition: background-color 0.3s;
 }
 
+.info-button {
+    width: 30%;
+    margin-left: 35%;
+}
+
 .product-item button:hover {
     background-color: rgba(85, 59, 106, 0.8);
 }

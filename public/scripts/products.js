@@ -9,17 +9,51 @@ document.addEventListener('DOMContentLoaded', function() {
     const colorSelect = document.getElementById('color-select');
     const applyFiltersButton = document.getElementById('apply-filters');
     
+    const modal = document.getElementById('flowerInfoModal');
+    const closeModal = document.getElementsByClassName('close')[0];
+    
+    closeModal.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+    
     window.addEventListener('resize', handleResize(resize, 400));
 
     let page = 1;
     let limit = calculateProductsPerRow();
     let isShopPage = window.location.pathname.includes('shop.html');
-    let isIndexPage = window.location.pathname.includes('index.html');
+    let isIndexPage = window.location.pathname.includes('index.html') || !window.location.pathname.includes('shop.html');
     let isViewingAll = false;
 
     const user = JSON.parse(localStorage.getItem('user'));
     const token = localStorage.getItem('token');
 
+    function openDataModal(flowerName) {
+        $.ajax({
+            url: `/api/flowers/get-info?name=${encodeURIComponent(flowerName.replace(' ','+'))}`,
+            method: 'GET',
+            success: function(data) {
+                if (data.commonName) {
+                    document.getElementById('modalFlowerName').textContent = data.commonName;
+                    document.getElementById('modalScientificName').textContent = `Scientific Name: ${data.scientificName}`;
+                    document.getElementById('modalFamily').textContent = `Family: ${data.family}`;
+                    document.getElementById('modalGenus').textContent = `Genus: ${data.genus}`;
+                    modal.style.display = "block";
+                } else {
+                    alert('No information found for this flower.');
+                }
+            },
+            error: function(error) {
+                console.error('Error fetching flower information:', error);
+                alert('Error fetching flower information. Please try again later.');
+            }
+        });
+    }
 
     function calculateProductsPerRow() {
         let screenWidth = window.innerWidth;
@@ -69,20 +103,23 @@ document.addEventListener('DOMContentLoaded', function() {
     function createProductElement(product) {
         const productItem = document.createElement('div');
         productItem.className = 'product-item';
-        const imageContainer = document.createElement('div');
-        imageContainer.className = 'image-container';
 
-        imageContainer.innerHTML = `
-            <img src="${product.imageUrl}" alt="${product.name}">`;
-
-        productItem.appendChild(imageContainer);
-        
-        productItem.innerHTML += `
+        productItem.innerHTML = `
+            <div class="image-container">
+                <img src="${product.imageUrl}" alt="${product.name}">
+            </div>
+            <button class="info-button">Info</button>
             <p>${product.name}</p>
             <p class="price">${product.price.toFixed(2)} ₪</p>
             <button class="add-to-cart" data-id="${product._id}">Add to Cart</button>
         `;
 
+        const infoButton = productItem.querySelector('.info-button');
+        infoButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            openDataModal(product.name);
+        });
 
         return productItem;
     }
@@ -239,28 +276,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function populateFilterOptions() {
-        try {
-            const options = await $.ajax({
-                url: '/api/flowers/filter-options',
-                method: 'GET',
-                dataType: 'json'
-            });
+        if (categorySelect){
+            try {
+                const options = await $.ajax({
+                    url: '/api/flowers/filter-options',
+                    method: 'GET',
+                    dataType: 'json'
+                });
 
-            options.categories.forEach(category => {
-                const option = document.createElement('option');
-                option.value = category;
-                option.textContent = category;
-                categorySelect.appendChild(option);
-            });
+                options.categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category;
+                    option.textContent = category;
+                    categorySelect.appendChild(option);
+                });
 
-            options.colors.forEach(color => {
-                const option = document.createElement('option');
-                option.value = color;
-                option.textContent = color;
-                colorSelect.appendChild(option);
-            });
-        } catch (error) {
-            console.error('Error fetching filter options:', error);
+                options.colors.forEach(color => {
+                    const option = document.createElement('option');
+                    option.value = color;
+                    option.textContent = color;
+                    colorSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error fetching filter options:', error);
+            }
         }
     }
 

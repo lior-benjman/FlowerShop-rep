@@ -1,5 +1,7 @@
+import https from 'https';
 import Flower from "../schema/models/Flower.js";
 import { config } from "../config/config.js";
+const { floraKey } = config;
 
 const { facebookPageAccessToken } = config;
 
@@ -150,6 +152,60 @@ export const flowerController = {
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
+  },
+
+  getInfo: async (req, res) => {
+    const flowerName = req.query.name;
+    const options = {
+      'method': 'GET',
+      'hostname': 'api.floracodex.com',
+      'path': `/v1/species/search/?token=${floraKey}&q=${flowerName}`,
+      'headers': {
+      },
+      'maxRedirects': 20
+    };
+
+    const apiReq = https.request(options, function (apiRes) {
+      const chunks = [];
+
+      apiRes.on('data', function (chunk) {
+        chunks.push(chunk);
+      });
+
+      apiRes.on('end', function () {
+        const body = Buffer.concat(chunks);
+        try {
+          const outputData = JSON.parse(body.toString());
+          const jsonData = outputData.data;
+          if (jsonData && jsonData.length > 0) {
+            const plantDetails = jsonData[0];
+            if (plantDetails) {
+              res.json({
+                commonName: plantDetails.common_name || 'Not available',
+                scientificName: plantDetails.scientific_name || 'Not available',
+                family: plantDetails.family || 'Not available',
+                genus: plantDetails.genus || 'Not available',
+                genus_id: plantDetails.genus_id
+              });
+            } else {
+              res.json({ message: 'No plants found' });
+            }
+          } else {
+            res.json({ message: 'No plants found' });
+          }
+        } catch (error) {
+          console.error('Error parsing API response:', error);
+          res.status(500).json({ error: 'Failed to parse plant information' });
+        }
+      });
+    });
+
+    apiReq.on('error', function (error) {
+      console.error('Error fetching from Garden API:', error);
+      res.status(500).json({ error: 'Failed to fetch plant information' });
+    });
+
+    apiReq.end();
   },
 
 };
