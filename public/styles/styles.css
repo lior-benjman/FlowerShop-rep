@@ -70,7 +70,7 @@ header {
 
 header banner {
     position: absolute;
-    height: 100vh; 
+    height: 70vh; 
     width: 100vw;
     overflow: hidden;
     display: flex;
