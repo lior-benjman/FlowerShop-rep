@@ -11,7 +11,5 @@ flowerRouter.post('/', flowerController.create);
 flowerRouter.get('/', flowerController.getAll);
 flowerRouter.get('/:id', flowerController.getById);
 
-flowerRouter.get('/top-selling', flowerController.getTopSellingFlowers);
-flowerRouter.get('/new-arrivals', flowerController.getNewArrivals);
-
 export default flowerRouter;
+
