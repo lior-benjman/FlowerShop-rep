@@ -7,7 +7,6 @@ import adminRoutes from './adminRoutes.js';
 
 const router = express.Router();
 
-
 router.use('/flowers', flowerRoutes);
 router.use('/orders', orderRoutes);
 router.use('/users', userRoutes);

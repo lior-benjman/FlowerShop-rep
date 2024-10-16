@@ -8,7 +8,6 @@ const { mapsApiKey } = config;
 
 const adminRouter = express.Router();
 
-
 adminRouter.use(verifyToken, isAdmin);
 
 adminRouter.get('/check', (req, res) => {
@@ -18,7 +17,6 @@ adminRouter.get('/check', (req, res) => {
 adminRouter.get('/fetchMapsApi', (req, res) => {
     res.json({ mapsApiKey });
 });
-
 
 //ordersManagement
 adminRouter.get('/orders', orderController.getAll);

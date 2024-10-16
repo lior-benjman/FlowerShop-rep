@@ -13,18 +13,15 @@ checkoutBtn.onclick = async function() {
     await fetchUserDetails();
 }
 
-
 span.onclick = function() {
     modal.style.display = "none";
 }
-
 
 window.onclick = function(event) {
     if (event.target == modal) {
         modal.style.display = "none";
     }
 }
-
 
 document.getElementById("checkout-form").onsubmit = async function(e) {
     e.preventDefault();
@@ -82,7 +79,6 @@ async function createOrderFromCart(shippingAddress) {
         throw error;
     }
 }
-
 
 async function fetchUserDetails() {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -266,8 +262,6 @@ async function updateCartCount() {
         console.error('Error updating cart count:', error);
     }
 }
-
-
 
 function isValidCardNumber(cardNumber) {
     return /^\d{16}$/.test(cardNumber);

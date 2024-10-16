@@ -11,7 +11,6 @@ userRouter.get('/check', (req, res) => {
     res.json({ loggedIn: true });
 });
 
-
 userRouter.get('/:id', userController.getById);
 userRouter.put('/:id', userController.update);
 userRouter.delete('/:id', userController.delete);
@@ -22,7 +21,6 @@ userRouter.put('/cart/update', userController.updateCartItemQuantity);
 userRouter.post('/cart/clear', userController.clearCart);
 userRouter.get('/cart/:userId', userController.getCart);
 userRouter.post('/cart/create-from-cart/:userId', orderController.createFromCart);
-
 
 userRouter.get('/:userId/orders', userController.getUserOrders);
 userRouter.put('/orders/:id/cancel', orderController.cancelOrder);

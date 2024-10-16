@@ -300,7 +300,6 @@ function createTopSellingFlowersChart(data) {
 }
 
 //orders
-
 async function loadOrders() {
     try {
         const orders = await $.ajax({
