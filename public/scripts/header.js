@@ -133,24 +133,3 @@ document.addEventListener('DOMContentLoaded', function() {
     addSocialLinks();
 });
 
-
-
-
-//     const instagramButton = document.querySelector('.instagram-icon');
-//     instagramButton.onclick = function() {
-//         window.open('https://www.instagram.com', '_blank');
-//     };
-
-//     const whatsappButton = document.querySelector('.whatsapp-icon');
-//     whatsappButton.onclick = function() {
-//         window.open('https://web.whatsapp.com', '_blank');
-//     };
-
-//     const tiktokButton = document.querySelector('.tiktok-icon');
-//     tiktokButton.onclick = function() {
-//         window.open('https://www.tiktok.com', '_blank');
-//     };
- 
-
-// הפעלת הפונקציה רק אחרי שהדף נטען
-
